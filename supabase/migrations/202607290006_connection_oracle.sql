@@ -1,6 +1,9 @@
 alter table public.messages
 add column if not exists message_type text not null default 'member';
 
+alter table public.profiles
+add column if not exists is_demo boolean not null default false;
+
 do $$
 begin
   if not exists (
@@ -110,7 +113,8 @@ begin
   from public.profiles p
   where p.id = auth.uid()
     and p.verified = true
-    and p.frozen = false;
+    and p.frozen = false
+    and p.is_demo = false;
 
   if not found then
     raise exception 'A verified, active profile is required.';
@@ -154,6 +158,7 @@ begin
     where p.id <> oracle_user.id
       and p.verified = true
       and p.frozen = false
+      and p.is_demo = false
       and not exists (
         select 1
         from public.oracle_connections existing

@@ -12,6 +12,7 @@ export type Profile = {
   courses: string[];
   avatar_url: string | null;
   verified: boolean;
+  is_demo: boolean;
   created_at: string;
 };
 

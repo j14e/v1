@@ -64,7 +64,7 @@ function SkeletonShell({ children }: { children: ReactNode }) {
 export function DirectoryLoadingSkeleton() {
   return (
     <SkeletonShell>
-      <div className="page-grid">
+      <div className="page-grid directory-layout">
         <aside className="sidebar skeleton-sidebar">
           {["departments", "inbox", "about"].map((panel) => (
             <section className="side-panel skeleton-side-panel" key={panel}>
@@ -120,6 +120,19 @@ export function DirectoryLoadingSkeleton() {
             </div>
           </section>
         </main>
+        <aside className="banner-rail">
+          <section className="banner-card">
+            <div className="panel-heading">
+              <SkeletonLine className="skeleton-panel-title" />
+            </div>
+            <span className="skeleton-block banner-display" />
+            <div className="banner-submit">
+              <SkeletonLine className="long" />
+              <SkeletonLine className="medium" />
+              <span className="skeleton-block skeleton-button-block" />
+            </div>
+          </section>
+        </aside>
       </div>
     </SkeletonShell>
   );

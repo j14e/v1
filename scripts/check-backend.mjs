@@ -24,7 +24,7 @@ const supabase = createClient(
 const { error: directoryError } = await supabase
   .from("directory_profiles")
   .select(
-    "id,display_name,availability_status,year_level,programme,major,department,courses,avatar_url",
+    "id,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,is_demo",
   )
   .limit(1);
 
@@ -64,6 +64,28 @@ const { error: anonymousOracleRunError } =
 
 if (!anonymousOracleRunError) {
   throw new Error("Anonymous users can run Connection Oracle.");
+}
+
+const { error: bannerReadError } = await supabase
+  .from("banner_submissions")
+  .select("id,file_path")
+  .limit(1);
+
+if (bannerReadError) {
+  throw new Error(`Public banner display is unavailable: ${bannerReadError.message}`);
+}
+
+const { error: anonymousBannerInsertError } = await supabase
+  .from("banner_submissions")
+  .insert({
+    member_id: "00000000-0000-0000-0000-000000000000",
+    file_path: "anonymous/test.png",
+    file_name: "test.png",
+    mime_type: "image/png",
+  });
+
+if (!anonymousBannerInsertError) {
+  throw new Error("Anonymous users can submit banner files.");
 }
 
 const { error: adminSettingsError } = await supabase

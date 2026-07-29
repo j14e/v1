@@ -6,8 +6,10 @@ import { useRouter } from "next/navigation";
 import { AuthDialog } from "@/components/auth-dialog";
 import { Avatar } from "@/components/avatar";
 import { AvailabilityBadge } from "@/components/availability-badge";
+import { DirectoryBanner } from "@/components/directory-banner";
 import { createClient } from "@/lib/supabase/client";
 import { departments } from "@/lib/catalog";
+import type { BannerSubmission } from "@/types/banner";
 import type { InboxItem } from "@/types/inbox";
 import type { Profile, SessionUser } from "@/types/profile";
 
@@ -16,6 +18,7 @@ type DirectoryClientProps = {
   user: SessionUser;
   ownProfile: Profile | null;
   inbox: InboxItem[];
+  featuredBanner: BannerSubmission | null;
 };
 
 function inboxPreview(item: InboxItem, currentUserId: string) {
@@ -42,6 +45,7 @@ export function DirectoryClient({
   user,
   ownProfile,
   inbox,
+  featuredBanner,
 }: DirectoryClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -150,7 +154,7 @@ export function DirectoryClient({
         </span>
       </div>
 
-      <div className="page-grid">
+      <div className="page-grid directory-layout">
         <aside className="sidebar">
           <section className="side-panel directory-browser">
             <button
@@ -296,6 +300,7 @@ export function DirectoryClient({
                       <Avatar
                         name={profile.display_name}
                         url={profile.avatar_url}
+                        size="small"
                       />
                       <span>
                         <strong>{profile.display_name}</strong>
@@ -303,7 +308,11 @@ export function DirectoryClient({
                           status={profile.availability_status}
                         />
                         <small>
-                          {user ? profile.email : "verified student"}
+                          {profile.is_demo
+                            ? "demo profile"
+                            : user
+                              ? profile.email
+                              : "verified student"}
                         </small>
                       </span>
                     </span>
@@ -347,6 +356,11 @@ export function DirectoryClient({
           </section>
 
         </main>
+        <DirectoryBanner
+          featured={featuredBanner}
+          user={user}
+          onRequireSignIn={() => showAuth("signin")}
+        />
       </div>
 
       <AuthDialog

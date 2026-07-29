@@ -1,5 +1,6 @@
 import { DirectoryClient } from "@/components/directory-client";
 import { createClient } from "@/lib/supabase/server";
+import type { BannerSubmission } from "@/types/banner";
 import type { InboxItem } from "@/types/inbox";
 import type { Message } from "@/types/message";
 import type { Profile, SessionUser } from "@/types/profile";
@@ -12,21 +13,44 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: profiles } = user
-    ? await supabase
+  const profilesRequest = user
+    ? supabase
         .from("profiles")
         .select(
-          "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+          "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,is_demo,created_at",
         )
         .eq("verified", true)
         .order("display_name", { ascending: true })
-    : await supabase
+    : supabase
         .from("directory_profiles")
         .select(
-          "id,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+          "id,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,is_demo,created_at",
         )
         .eq("verified", true)
         .order("display_name", { ascending: true });
+  const [{ data: profiles }, { data: rawBanners }] = await Promise.all([
+    profilesRequest,
+    supabase
+      .from("banner_submissions")
+      .select("id,member_id,file_path,file_name,mime_type,created_at")
+      .limit(250),
+  ]);
+
+  const banners = (rawBanners ?? []) as Omit<
+    BannerSubmission,
+    "public_url"
+  >[];
+  const randomBanner = banners.length
+    ? banners[Math.floor(Math.random() * banners.length)]
+    : null;
+  const featuredBanner: BannerSubmission | null = randomBanner
+    ? {
+        ...randomBanner,
+        public_url: supabase.storage
+          .from("directory-banners")
+          .getPublicUrl(randomBanner.file_path).data.publicUrl,
+      }
+    : null;
 
   let ownProfile: Profile | null = null;
   let inbox: InboxItem[] = [];
@@ -35,7 +59,7 @@ export default async function HomePage() {
       supabase
         .from("profiles")
         .select(
-          "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+          "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,is_demo,created_at",
         )
         .eq("id", user.id)
         .maybeSingle(),
@@ -63,7 +87,7 @@ export default async function HomePage() {
       ? await supabase
           .from("profiles")
           .select(
-            "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+            "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,is_demo,created_at",
           )
           .in("id", peerIds)
       : { data: [] };
@@ -113,6 +137,7 @@ export default async function HomePage() {
       user={sessionUser}
       ownProfile={ownProfile}
       inbox={inbox}
+      featuredBanner={featuredBanner}
     />
   );
 }
