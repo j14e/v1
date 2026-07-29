@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { departments, majors, programmes, yearLevels } from "@/lib/catalog";
+import { departments, majors, programmeGroups, yearLevels } from "@/lib/catalog";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "signup" | "signin";
@@ -194,8 +194,12 @@ export function AuthDialog({
                 <option value="" disabled>
                   Select programme
                 </option>
-                {programmes.map((item) => (
-                  <option key={item}>{item}</option>
+                {programmeGroups.map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.options.map((item) => (
+                      <option key={item}>{item}</option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </label>

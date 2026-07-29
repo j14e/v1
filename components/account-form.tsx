@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/avatar";
-import { departments, majors, programmes, yearLevels } from "@/lib/catalog";
+import { departments, majors, programmeGroups, yearLevels } from "@/lib/catalog";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/types/profile";
 
@@ -144,8 +144,12 @@ export function AccountForm({ profile }: { profile: Profile }) {
           <label>
             Programme
             <select name="programme" required defaultValue={profile.programme ?? ""}>
-              {programmes.map((item) => (
-                <option key={item}>{item}</option>
+              {programmeGroups.map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.options.map((item) => (
+                    <option key={item}>{item}</option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </label>
