@@ -360,7 +360,7 @@ textarea:focus-visible {
 
 .directory-main {
   min-width: 0;
-  padding: 14px 12px 30px;
+  padding: 16px 18px 30px;
 }
 
 .section-heading {
@@ -433,14 +433,14 @@ textarea::placeholder {
 .directory-header,
 .directory-row {
   display: grid;
-  grid-template-columns: minmax(180px, 1.2fr) minmax(75px, 0.5fr) minmax(160px, 1fr) minmax(130px, 0.85fr) 88px;
-  gap: 9px;
+  grid-template-columns: minmax(230px, 1.25fr) minmax(95px, 0.55fr) minmax(190px, 1fr) minmax(160px, 0.9fr) 110px;
+  gap: 12px;
   align-items: center;
 }
 
 .directory-header {
-  min-height: 27px;
-  padding: 0 8px;
+  min-height: 32px;
+  padding: 0 12px;
   border-bottom: 1px solid var(--line-dark);
   background: #d6dde6;
   color: #485565;
@@ -452,13 +452,13 @@ textarea::placeholder {
 
 .directory-row {
   width: 100%;
-  min-height: 54px;
+  min-height: 82px;
   border: 0;
   border-bottom: 1px solid #d6dbe1;
   background: white;
   color: var(--ink);
   cursor: pointer;
-  padding: 6px 8px;
+  padding: 10px 12px;
   text-align: left;
 }
 
@@ -480,15 +480,15 @@ textarea::placeholder {
 
 .directory-row small {
   display: block;
-  margin-top: 2px;
+  margin-top: 3px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .person-cell {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -500,7 +500,7 @@ textarea::placeholder {
   display: block;
   overflow: hidden;
   color: var(--blue-800);
-  font-size: 13px;
+  font-size: 15px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1993,7 +1993,7 @@ textarea::placeholder {
 @media (max-width: 1320px) {
   .directory-header,
   .directory-row {
-    grid-template-columns: minmax(180px, 1.15fr) minmax(70px, 0.45fr) minmax(155px, 1fr) minmax(125px, 0.8fr);
+    grid-template-columns: minmax(220px, 1.25fr) minmax(90px, 0.55fr) minmax(180px, 1fr) minmax(150px, 0.85fr);
   }
 
   .directory-header span:nth-child(5),
@@ -2121,11 +2121,11 @@ textarea::placeholder {
     grid-template-columns: 1fr;
     gap: 6px;
     min-height: 0;
-    padding: 9px;
+    padding: 12px;
   }
 
   .directory-row > span:not(.person-cell) {
-    padding-left: 42px;
+    padding-left: 68px;
   }
 
   .directory-row > span:not(.person-cell)::before {
