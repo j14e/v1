@@ -1,0 +1,7 @@
+.git
+.next
+.agent-browser
+.vercel
+node_modules
+.env*
+npm-debug.log*
