@@ -10,6 +10,7 @@ An intentionally simple University of Auckland contact directory.
 - Search and filter by year, programme, major, and department
 - Friend requests between verified members
 - Private text, image, and voice-note messaging without requiring friendship
+- Password-protected owner administration at `/admin`
 - Optional profile photos and course listings
 
 ## Local setup

@@ -48,4 +48,13 @@ if (!privateMessageError) {
   throw new Error("Anonymous access can read private messages.");
 }
 
+const { error: adminSettingsError } = await supabase
+  .from("admin_settings")
+  .select("password_hash")
+  .limit(1);
+
+if (!adminSettingsError) {
+  throw new Error("Anonymous access can read admin settings.");
+}
+
 console.log("Backend checks passed.");
