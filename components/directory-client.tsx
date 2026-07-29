@@ -8,24 +8,47 @@ import { Avatar } from "@/components/avatar";
 import { AvailabilityBadge } from "@/components/availability-badge";
 import { createClient } from "@/lib/supabase/client";
 import { departments } from "@/lib/catalog";
+import type { InboxItem } from "@/types/inbox";
 import type { Profile, SessionUser } from "@/types/profile";
 
 type DirectoryClientProps = {
   profiles: Profile[];
   user: SessionUser;
   ownProfile: Profile | null;
+  inbox: InboxItem[];
 };
+
+function inboxPreview(item: InboxItem, currentUserId: string) {
+  if (item.latest.message_type === "connection") {
+    return "Connected by Connection Oracle";
+  }
+  const prefix = item.latest.sender_id === currentUserId ? "You: " : "";
+  if (item.latest.body) return `${prefix}${item.latest.body}`;
+  if (item.latest.media_type === "image") return `${prefix}sent an image`;
+  if (item.latest.media_type === "audio") return `${prefix}sent a voice note`;
+  return `${prefix}new message`;
+}
+
+function formatInboxTime(value: string) {
+  return new Intl.DateTimeFormat("en-NZ", {
+    month: "short",
+    day: "numeric",
+    timeZone: "Pacific/Auckland",
+  }).format(new Date(value));
+}
 
 export function DirectoryClient({
   profiles,
   user,
   ownProfile,
+  inbox,
 }: DirectoryClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [department, setDepartment] = useState("");
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
+  const [departmentsOpen, setDepartmentsOpen] = useState(true);
 
   const filteredProfiles = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -129,30 +152,92 @@ export function DirectoryClient({
 
       <div className="page-grid">
         <aside className="sidebar">
-          <section className="side-panel">
-            <div className="panel-heading">browse</div>
+          <section className="side-panel directory-browser">
+            <button
+              className="panel-heading panel-toggle"
+              type="button"
+              aria-expanded={departmentsOpen}
+              aria-controls="department-links"
+              onClick={() => setDepartmentsOpen((open) => !open)}
+            >
+              <span>departments</span>
+              <span aria-hidden="true">{departmentsOpen ? "−" : "+"}</span>
+            </button>
             <button
               className={!department ? "side-link selected" : "side-link"}
               type="button"
               onClick={() => setDepartment("")}
             >
-              All members
+              All members directory
             </button>
-            {departments.map((item) => (
-              <button
-                className={
-                  department === item ? "side-link selected" : "side-link"
-                }
-                type="button"
-                key={item}
-                onClick={() => setDepartment(item)}
-              >
-                {item}
-              </button>
-            ))}
+            {departmentsOpen ? (
+              <div id="department-links">
+                {departments.map((item) => (
+                  <button
+                    className={
+                      department === item ? "side-link selected" : "side-link"
+                    }
+                    type="button"
+                    key={item}
+                    onClick={() => setDepartment(item)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </section>
 
-          <section className="side-panel" id="about">
+          <section className="side-panel inbox-panel">
+            <div className="panel-heading">
+              <span>inbox</span>
+              {user ? <Link href="/messages">open all</Link> : null}
+            </div>
+            {user ? (
+              inbox.length ? (
+                <div className="homepage-inbox-list">
+                  {inbox.map((item) => (
+                    <Link
+                      className={item.unread ? "homepage-inbox-row unread" : "homepage-inbox-row"}
+                      href={`/messages/${item.person.id}`}
+                      key={item.person.id}
+                    >
+                      <Avatar
+                        name={item.person.display_name}
+                        url={item.person.avatar_url}
+                        size="small"
+                      />
+                      <span>
+                        <strong>{item.person.display_name}</strong>
+                        <small>{inboxPreview(item, user.id)}</small>
+                      </span>
+                      <span className="homepage-inbox-meta">
+                        <time dateTime={item.latest.created_at}>
+                          {formatInboxTime(item.latest.created_at)}
+                        </time>
+                        {item.unread ? <b>{item.unread}</b> : null}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p>No messages yet.</p>
+              )
+            ) : (
+              <div className="homepage-inbox-guest">
+                <p>Sign in to see messages and new connections.</p>
+                <button
+                  className="side-link"
+                  type="button"
+                  onClick={() => showAuth("signin")}
+                >
+                  sign in to inbox
+                </button>
+              </div>
+            )}
+          </section>
+
+          <section className="side-panel about-panel" id="about">
             <div className="panel-heading">about v1</div>
             <p>
               Find people across faculties, majors, years, and courses. Directory
@@ -161,26 +246,6 @@ export function DirectoryClient({
             </p>
           </section>
 
-          <section className="side-panel access-panel">
-            <div className="panel-heading">access</div>
-            {user ? (
-              <p>
-                Your University email is verified. You have full directory
-                access.
-              </p>
-            ) : (
-              <>
-                <p>Use an @aucklanduni.ac.nz address to join.</p>
-                <button
-                  className="button full-button"
-                  type="button"
-                  onClick={() => showAuth("signup")}
-                >
-                  create profile
-                </button>
-              </>
-            )}
-          </section>
         </aside>
 
         <main className="directory-main">

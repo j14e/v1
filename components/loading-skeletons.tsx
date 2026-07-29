@@ -66,7 +66,7 @@ export function DirectoryLoadingSkeleton() {
     <SkeletonShell>
       <div className="page-grid">
         <aside className="sidebar skeleton-sidebar">
-          {["browse", "about", "access"].map((panel) => (
+          {["departments", "inbox", "about"].map((panel) => (
             <section className="side-panel skeleton-side-panel" key={panel}>
               <div className="panel-heading">
                 <SkeletonLine className="skeleton-panel-title" />

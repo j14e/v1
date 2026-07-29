@@ -231,6 +231,24 @@ textarea:focus-visible {
   text-transform: uppercase;
 }
 
+.panel-heading a {
+  color: var(--blue-800);
+  font-size: 10px;
+  text-transform: none;
+}
+
+.panel-toggle {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--line-dark);
+  cursor: pointer;
+  text-align: left;
+}
+
+.panel-toggle:hover {
+  background: #cbd5e1;
+}
+
 .side-link {
   width: 100%;
   display: block;
@@ -257,6 +275,78 @@ textarea:focus-visible {
 
 .side-link:last-child {
   border-bottom: 0;
+}
+
+.homepage-inbox-list {
+  display: grid;
+}
+
+.homepage-inbox-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  padding: 8px;
+  border-bottom: 1px solid #d8dde3;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.homepage-inbox-row:last-child {
+  border-bottom: 0;
+}
+
+.homepage-inbox-row:hover,
+.homepage-inbox-row.unread {
+  background: var(--blue-100);
+}
+
+.homepage-inbox-row > span:not(.avatar) {
+  min-width: 0;
+}
+
+.homepage-inbox-row strong,
+.homepage-inbox-row small {
+  display: block;
+}
+
+.homepage-inbox-row strong {
+  overflow: hidden;
+  color: var(--blue-900);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.homepage-inbox-row small {
+  overflow: hidden;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.homepage-inbox-meta {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.homepage-inbox-meta b {
+  min-width: 16px;
+  padding: 2px 4px;
+  background: var(--blue-800);
+  color: white;
+  text-align: center;
+}
+
+.homepage-inbox-guest .side-link {
+  border-top: 1px solid #d8dde3;
 }
 
 .full-button {
@@ -1890,10 +1980,6 @@ textarea::placeholder {
     border-bottom: 1px solid var(--line-dark);
   }
 
-  .sidebar .side-panel:first-child {
-    display: none;
-  }
-
   .side-panel {
     margin: 0;
   }
@@ -2055,7 +2141,7 @@ textarea::placeholder {
     grid-template-columns: 1fr;
   }
 
-  .sidebar .side-panel:nth-child(2) {
+  .sidebar .about-panel {
     display: none;
   }
 
