@@ -417,7 +417,7 @@ textarea::placeholder {
   align-items: center;
   gap: 5px;
   margin-top: 4px;
-  border: 1px solid;
+  border: 0;
   padding: 2px 5px;
   font-size: 10px;
   font-weight: bold;
@@ -426,15 +426,13 @@ textarea::placeholder {
 }
 
 .availability-badge.open_to_talk {
-  border-color: #7da489;
-  background: #edf8f0;
-  color: #245d34;
+  background: #3f7d58;
+  color: white;
 }
 
 .availability-badge.busy {
-  border-color: #b8a66f;
-  background: #fff8df;
-  color: #6f5a1d;
+  background: #727b87;
+  color: white;
 }
 
 .availability-dot {
