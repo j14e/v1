@@ -39,4 +39,13 @@ if (!privateEmailError) {
   throw new Error("Anonymous access can read private profile email data.");
 }
 
+const { error: privateMessageError } = await supabase
+  .from("messages")
+  .select("id")
+  .limit(1);
+
+if (!privateMessageError) {
+  throw new Error("Anonymous access can read private messages.");
+}
+
 console.log("Backend checks passed.");

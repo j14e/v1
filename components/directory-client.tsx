@@ -75,6 +75,7 @@ export function DirectoryClient({
           <Link className="active" href="/">
             directory
           </Link>
+          {user ? <Link href="/messages">messages</Link> : null}
           <a href="#about">about</a>
         </nav>
         <div className="member-actions">
@@ -83,6 +84,9 @@ export function DirectoryClient({
               <span className="signed-in-as">
                 signed in as {ownProfile?.display_name ?? user.email}
               </span>
+              <Link className="mobile-nav-link" href="/messages">
+                messages
+              </Link>
               <Link href="/account">my profile</Link>
               <button className="nav-button" type="button" onClick={signOut}>
                 sign out
@@ -146,8 +150,8 @@ export function DirectoryClient({
             <div className="panel-heading">about v1</div>
             <p>
               Find people across faculties, majors, years, and courses. Directory
-              access is public. Profiles and contact tools are for verified
-              students.
+              access is public. Profiles, friends, and messaging are for
+              verified students.
             </p>
           </section>
 
@@ -179,7 +183,7 @@ export function DirectoryClient({
               <h1>Contact directory</h1>
               <p>
                 Browse verified University of Auckland students. Sign in to open
-                a profile or add someone to your contacts.
+                a profile, send a message, or add someone as a friend.
               </p>
             </div>
           </div>
@@ -268,10 +272,6 @@ export function DirectoryClient({
             )}
           </section>
 
-          <footer className="site-footer">
-            <span>v1 — independent student directory</span>
-            <span>not affiliated with the University of Auckland</span>
-          </footer>
         </main>
       </div>
 

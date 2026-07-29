@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Avatar } from "@/components/avatar";
-import { ContactButton } from "@/components/contact-button";
+import { FriendButton } from "@/components/friend-button";
 import { SimpleHeader } from "@/components/simple-header";
 import { createClient } from "@/lib/supabase/server";
+import type { Friendship } from "@/types/message";
 import type { Profile } from "@/types/profile";
 
 export const dynamic = "force-dynamic";
@@ -39,14 +41,14 @@ export default async function PersonPage({
   if (!profile) notFound();
 
   const person = profile as Profile;
-  const { data: contact } =
+  const { data: friendship } =
     user.id === person.id
       ? { data: null }
       : await supabase
           .from("contacts")
-          .select("id")
-          .eq("requester_id", user.id)
-          .eq("addressee_id", person.id)
+          .select("id,requester_id,addressee_id,status")
+          .in("requester_id", [user.id, person.id])
+          .in("addressee_id", [user.id, person.id])
           .maybeSingle();
 
   return (
@@ -114,11 +116,19 @@ export default async function PersonPage({
               </dl>
 
               {person.id !== user.id ? (
-                <ContactButton
-                  requesterId={user.id}
-                  addresseeId={person.id}
-                  existingId={contact?.id ?? null}
-                />
+                <div className="profile-actions">
+                  <Link
+                    className="button inline-button"
+                    href={`/messages/${person.id}`}
+                  >
+                    Send message
+                  </Link>
+                  <FriendButton
+                    currentUserId={user.id}
+                    personId={person.id}
+                    initialFriendship={(friendship as Friendship | null) ?? null}
+                  />
+                </div>
               ) : null}
             </div>
           </div>

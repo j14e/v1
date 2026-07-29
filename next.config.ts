@@ -9,6 +9,11 @@ if (supabaseUrl) {
     hostname: new URL(supabaseUrl).hostname,
     pathname: "/storage/v1/object/public/avatars/**",
   });
+  remotePatterns.push({
+    protocol: "https",
+    hostname: new URL(supabaseUrl).hostname,
+    pathname: "/storage/v1/object/sign/message-media/**",
+  });
 }
 
 const nextConfig: NextConfig = {

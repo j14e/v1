@@ -8,7 +8,8 @@ An intentionally simple University of Auckland contact directory.
 - Signup restricted to `@aucklanduni.ac.nz`
 - Email confirmation, sign in, and profile management through Supabase
 - Search and filter by year, programme, major, and department
-- Contact requests between verified members
+- Friend requests between verified members
+- Private text, image, and voice-note messaging without requiring friendship
 - Optional profile photos and course listings
 
 ## Local setup
