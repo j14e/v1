@@ -48,7 +48,7 @@ export function DirectoryClient({
   const [department, setDepartment] = useState("");
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
-  const [departmentsOpen, setDepartmentsOpen] = useState(true);
+  const [departmentsOpen, setDepartmentsOpen] = useState(false);
 
   const filteredProfiles = useMemo(() => {
     const needle = query.trim().toLowerCase();
