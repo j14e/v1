@@ -18,6 +18,7 @@ export function SimpleHeader({ name }: { name: string }) {
         </Link>
         <nav className="primary-nav" aria-label="Main navigation">
           <Link href="/">directory</Link>
+          <Link href="/oracle">oracle</Link>
           <Link href="/messages">messages</Link>
           <Link href="/account">my profile</Link>
         </nav>
@@ -25,6 +26,9 @@ export function SimpleHeader({ name }: { name: string }) {
           <span className="signed-in-as">signed in as {name}</span>
           <Link className="mobile-nav-link" href="/messages">
             messages
+          </Link>
+          <Link className="mobile-nav-link" href="/oracle">
+            oracle
           </Link>
           <Link className="mobile-nav-link" href="/account">
             profile

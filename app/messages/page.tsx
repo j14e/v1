@@ -16,6 +16,9 @@ type Conversation = {
 };
 
 function messagePreview(message: Message) {
+  if (message.message_type === "connection") {
+    return "Connected by Connection Oracle";
+  }
   if (message.body) return message.body;
   if (message.media_type === "image") return "sent an image";
   if (message.media_type === "audio") return "sent a voice note";
@@ -47,7 +50,7 @@ export default async function MessagesPage() {
     supabase
       .from("messages")
       .select(
-        "id,sender_id,recipient_id,body,media_type,media_path,duration_seconds,created_at,read_at",
+        "id,sender_id,recipient_id,message_type,body,media_type,media_path,duration_seconds,created_at,read_at",
       )
       .order("created_at", { ascending: false })
       .limit(500),
@@ -134,7 +137,10 @@ export default async function MessagesPage() {
                     </small>
                   </span>
                   <span className="conversation-preview">
-                    {conversation.latest.sender_id === user.id ? "You: " : ""}
+                    {conversation.latest.message_type === "member" &&
+                    conversation.latest.sender_id === user.id
+                      ? "You: "
+                      : ""}
                     {messagePreview(conversation.latest)}
                   </span>
                   <span className="conversation-meta">

@@ -43,11 +43,27 @@ if (!privateEmailError) {
 
 const { error: privateMessageError } = await supabase
   .from("messages")
-  .select("id")
+  .select("id,message_type")
   .limit(1);
 
 if (!privateMessageError) {
   throw new Error("Anonymous access can read private messages.");
+}
+
+const { error: privateOracleError } = await supabase
+  .from("oracle_connections")
+  .select("id")
+  .limit(1);
+
+if (!privateOracleError) {
+  throw new Error("Anonymous access can read Oracle connections.");
+}
+
+const { error: anonymousOracleRunError } =
+  await supabase.rpc("run_connection_oracle");
+
+if (!anonymousOracleRunError) {
+  throw new Error("Anonymous users can run Connection Oracle.");
 }
 
 const { error: adminSettingsError } = await supabase

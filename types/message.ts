@@ -2,6 +2,7 @@ export type Message = {
   id: string;
   sender_id: string;
   recipient_id: string;
+  message_type: "member" | "connection";
   body: string | null;
   media_type: "image" | "audio" | null;
   media_path: string | null;

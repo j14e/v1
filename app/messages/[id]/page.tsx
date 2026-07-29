@@ -44,7 +44,7 @@ export default async function ConversationPage({
     supabase
       .from("messages")
       .select(
-        "id,sender_id,recipient_id,body,media_type,media_path,duration_seconds,created_at,read_at",
+        "id,sender_id,recipient_id,message_type,body,media_type,media_path,duration_seconds,created_at,read_at",
       )
       .in("sender_id", [user.id, id])
       .in("recipient_id", [user.id, id])

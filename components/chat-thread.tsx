@@ -140,13 +140,14 @@ export function ChatThread({
       .insert({
         sender_id: currentUser.id,
         recipient_id: recipient.id,
+        message_type: "member",
         body: values.body || null,
         media_type: values.mediaType || null,
         media_path: values.mediaPath || null,
         duration_seconds: values.durationSeconds ?? null,
       })
       .select(
-        "id,sender_id,recipient_id,body,media_type,media_path,duration_seconds,created_at,read_at",
+        "id,sender_id,recipient_id,message_type,body,media_type,media_path,duration_seconds,created_at,read_at",
       )
       .single();
 
@@ -344,6 +345,29 @@ export function ChatThread({
         {messages.length ? (
           messages.map((message) => {
             const mine = message.sender_id === currentUser.id;
+            if (message.message_type === "connection") {
+              return (
+                <article
+                  className="connection-message"
+                  key={message.id}
+                  aria-label={`Connected with ${recipient.displayName} by Connection Oracle`}
+                >
+                  <span className="connection-message-mark" aria-hidden="true">
+                    O
+                  </span>
+                  <span>
+                    <strong>Connected by Connection Oracle</strong>
+                    <small>
+                      You and {recipient.displayName} were introduced based on
+                      year and studies.
+                    </small>
+                  </span>
+                  <time dateTime={message.created_at}>
+                    {formatMessageTime(message.created_at)}
+                  </time>
+                </article>
+              );
+            }
             return (
               <article
                 className={mine ? "message-row mine" : "message-row"}

@@ -77,6 +77,7 @@ export function DirectoryClient({
           <Link className="active" href="/">
             directory
           </Link>
+          {user ? <Link href="/oracle">oracle</Link> : null}
           {user ? <Link href="/messages">messages</Link> : null}
           <a href="#about">about</a>
         </nav>
@@ -88,6 +89,9 @@ export function DirectoryClient({
               </span>
               <Link className="mobile-nav-link" href="/messages">
                 messages
+              </Link>
+              <Link className="mobile-nav-link" href="/oracle">
+                oracle
               </Link>
               <Link href="/account">my profile</Link>
               <button className="nav-button" type="button" onClick={signOut}>

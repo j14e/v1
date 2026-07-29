@@ -12,6 +12,7 @@ const detailRows = [
 ];
 const messageRows = ["first", "second", "third", "fourth"];
 const adminRows = ["member-one", "member-two", "member-three"];
+const oracleRows = ["match-one", "match-two", "match-three"];
 
 function SkeletonLine({
   className = "",
@@ -260,6 +261,71 @@ export function AdminLoadingSkeleton() {
               </tbody>
             </table>
           </div>
+        </section>
+      </main>
+    </SkeletonShell>
+  );
+}
+
+export function OracleLoadingSkeleton() {
+  return (
+    <SkeletonShell>
+      <main className="oracle-page">
+        <section className="oracle-card">
+          <div className="profile-titlebar oracle-titlebar">
+            <div>
+              <SkeletonLine className="skeleton-heading-line" />
+              <SkeletonLine className="medium" />
+            </div>
+            <SkeletonLine className="skeleton-status-line" />
+          </div>
+          <div className="oracle-intro">
+            <aside className="oracle-signal">
+              <div className="panel-heading">
+                <SkeletonLine className="skeleton-panel-title" />
+              </div>
+              <div className="skeleton-panel-body">
+                {["year", "programme", "major", "department"].map((row) => (
+                  <div className="skeleton-oracle-field" key={row}>
+                    <SkeletonLine className="short" />
+                    <SkeletonLine className="medium" />
+                  </div>
+                ))}
+              </div>
+            </aside>
+            <div className="oracle-explanation">
+              <SkeletonLine className="skeleton-heading-line" />
+              <SkeletonLine className="long" />
+              <SkeletonLine className="long" />
+              <SkeletonLine className="medium" />
+              <span className="skeleton-block skeleton-button-block" />
+            </div>
+          </div>
+          <section className="oracle-results">
+            <div className="oracle-results-heading">
+              <div>
+                <SkeletonLine className="skeleton-heading-line" />
+                <SkeletonLine className="short" />
+              </div>
+            </div>
+            <div className="oracle-table">
+              {oracleRows.map((row) => (
+                <div className="oracle-row skeleton-oracle-row" key={row}>
+                  <span className="person-cell">
+                    <span className="skeleton-block skeleton-avatar" />
+                    <span className="skeleton-person-lines">
+                      <SkeletonLine className="medium" />
+                      <SkeletonLine className="short" />
+                    </span>
+                  </span>
+                  <SkeletonLine className="medium" />
+                  <SkeletonLine className="long" />
+                  <SkeletonLine className="medium" />
+                  <SkeletonLine className="short" />
+                </div>
+              ))}
+            </div>
+          </section>
         </section>
       </main>
     </SkeletonShell>
