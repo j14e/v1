@@ -1,0 +1,7 @@
+.vercel
+.env*
+!.env.example
+.next/
+.agent-browser/
+node_modules/
+npm-debug.log*
