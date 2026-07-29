@@ -1303,6 +1303,217 @@ textarea::placeholder {
   color: #276135;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skeleton-shell {
+  cursor: progress;
+}
+
+.skeleton-block {
+  display: block;
+  border-radius: 1px;
+  background:
+    linear-gradient(
+      100deg,
+      #d9dee5 20%,
+      #edf0f3 38%,
+      #d9dee5 56%
+    );
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.35s linear infinite;
+}
+
+.skeleton-line {
+  width: 100%;
+  height: 10px;
+}
+
+.skeleton-line.short {
+  width: 38%;
+}
+
+.skeleton-line.medium {
+  width: 68%;
+}
+
+.skeleton-line.long {
+  width: 88%;
+}
+
+.skeleton-topbar .wordmark {
+  cursor: progress;
+}
+
+.skeleton-nav-item {
+  width: 96px;
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.skeleton-signed-in {
+  width: 150px;
+  background: rgba(221, 232, 245, 0.28);
+}
+
+.skeleton-nav-action {
+  width: 52px;
+  background: rgba(221, 232, 245, 0.28);
+}
+
+.skeleton-utility-title {
+  width: 145px;
+}
+
+.skeleton-utility-copy {
+  width: 120px;
+}
+
+.skeleton-sidebar {
+  pointer-events: none;
+}
+
+.skeleton-side-panel {
+  min-height: 110px;
+}
+
+.skeleton-panel-title {
+  width: 72px;
+}
+
+.skeleton-panel-body {
+  display: grid;
+  gap: 12px;
+  padding: 11px 9px;
+}
+
+.skeleton-section-heading {
+  align-items: flex-start;
+}
+
+.skeleton-heading-line {
+  width: 210px;
+  height: 20px;
+}
+
+.skeleton-subheading-line {
+  width: min(470px, 72vw);
+  margin-top: 8px;
+}
+
+.skeleton-status-line {
+  width: 125px;
+}
+
+.skeleton-label-line {
+  width: 78px;
+}
+
+.skeleton-input-block {
+  width: min(560px, 100%);
+  height: 34px;
+}
+
+.skeleton-directory-row {
+  cursor: progress;
+}
+
+.skeleton-avatar {
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  border-radius: 0;
+}
+
+.skeleton-person-lines {
+  width: 150px;
+  display: grid;
+  gap: 9px;
+}
+
+.skeleton-directory-row > span > .skeleton-line + .skeleton-line {
+  margin-top: 8px;
+}
+
+.skeleton-profile-photo {
+  width: 112px;
+  height: 112px;
+}
+
+.skeleton-profile-details dl > div {
+  min-height: 48px;
+}
+
+.skeleton-profile-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.skeleton-button-block {
+  width: 100px;
+  height: 34px;
+}
+
+.skeleton-conversation-avatar {
+  width: 54px;
+  height: 54px;
+}
+
+.skeleton-chat-avatar {
+  width: 34px;
+  height: 34px;
+}
+
+.skeleton-message-history {
+  overflow: hidden;
+}
+
+.skeleton-message-bubble {
+  display: grid;
+  gap: 9px;
+  padding-top: 4px;
+}
+
+.skeleton-composer {
+  min-height: 145px;
+}
+
+.skeleton-textarea-block {
+  width: 100%;
+  height: 62px;
+  margin: 7px 0 9px;
+}
+
+.skeleton-admin-table td {
+  height: 66px;
+  vertical-align: middle;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 110% 0;
+  }
+
+  to {
+    background-position: -110% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block {
+    animation: none;
+    background: #dfe3e8;
+  }
+}
+
 @media (max-width: 1050px) {
   .directory-header,
   .directory-row {
@@ -1467,6 +1678,14 @@ textarea::placeholder {
 
   .admin-page {
     padding: 10px;
+  }
+
+  .skeleton-nav-item {
+    display: none;
+  }
+
+  .skeleton-heading-line {
+    width: 170px;
   }
 }
 
