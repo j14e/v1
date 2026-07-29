@@ -86,7 +86,7 @@ export function AuthDialog({
       email,
       password: String(formData.get("password")),
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/confirm`,
+        emailRedirectTo: window.location.origin,
         data: {
           display_name: String(formData.get("display_name")).trim(),
           year_level: String(formData.get("year_level")),

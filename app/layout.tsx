@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthCodeHandler } from "@/components/auth-code-handler";
 
 export const metadata: Metadata = {
   title: "v1 — University contact directory",
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AuthCodeHandler />
+        {children}
+      </body>
     </html>
   );
 }
