@@ -503,7 +503,7 @@ textarea::placeholder {
 
 .availability-badge {
   width: fit-content;
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 5px;
   margin-top: 4px;
