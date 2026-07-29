@@ -74,6 +74,7 @@ export function AccountForm({ profile }: { profile: Profile }) {
       .from("profiles")
       .update({
         display_name: String(formData.get("display_name")).trim(),
+        availability_status: String(formData.get("availability_status")),
         year_level: String(formData.get("year_level")),
         programme: String(formData.get("programme")),
         department: String(formData.get("department")),
@@ -128,6 +129,17 @@ export function AccountForm({ profile }: { profile: Profile }) {
           <label>
             University email
             <input value={profile.email} readOnly aria-readonly="true" />
+          </label>
+          <label>
+            Availability
+            <select
+              name="availability_status"
+              required
+              defaultValue={profile.availability_status}
+            >
+              <option value="open_to_talk">Open to talk</option>
+              <option value="busy">Busy</option>
+            </select>
           </label>
           <label>
             Year

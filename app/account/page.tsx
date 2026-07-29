@@ -17,7 +17,7 @@ export default async function AccountPage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id,email,display_name,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+      "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
     )
     .eq("id", user.id)
     .single();

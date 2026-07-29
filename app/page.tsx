@@ -10,23 +10,28 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const directorySource = user ? "profiles" : "directory_profiles";
-  const directoryFields = user
-    ? "id,email,display_name,year_level,programme,major,department,courses,avatar_url,verified,created_at"
-    : "id,display_name,year_level,programme,major,department,courses,avatar_url,verified,created_at";
-
-  const { data: profiles } = await supabase
-    .from(directorySource)
-    .select(directoryFields)
-    .eq("verified", true)
-    .order("display_name", { ascending: true });
+  const { data: profiles } = user
+    ? await supabase
+        .from("profiles")
+        .select(
+          "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+        )
+        .eq("verified", true)
+        .order("display_name", { ascending: true })
+    : await supabase
+        .from("directory_profiles")
+        .select(
+          "id,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+        )
+        .eq("verified", true)
+        .order("display_name", { ascending: true });
 
   let ownProfile: Profile | null = null;
   if (user) {
     const { data } = await supabase
       .from("profiles")
       .select(
-        "id,email,display_name,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+        "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
       )
       .eq("id", user.id)
       .maybeSingle();

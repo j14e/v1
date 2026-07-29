@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Avatar } from "@/components/avatar";
+import { AvailabilityBadge } from "@/components/availability-badge";
 import { FriendButton } from "@/components/friend-button";
 import { SimpleHeader } from "@/components/simple-header";
 import { createClient } from "@/lib/supabase/server";
@@ -26,7 +27,7 @@ export default async function PersonPage({
     supabase
       .from("profiles")
       .select(
-        "id,email,display_name,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+        "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
       )
       .eq("id", id)
       .eq("verified", true)
@@ -76,6 +77,12 @@ export default async function PersonPage({
                 <div>
                   <dt>Name</dt>
                   <dd>{person.display_name}</dd>
+                </div>
+                <div>
+                  <dt>Availability</dt>
+                  <dd>
+                    <AvailabilityBadge status={person.availability_status} />
+                  </dd>
                 </div>
                 <div>
                   <dt>Year</dt>

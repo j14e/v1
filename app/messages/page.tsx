@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Avatar } from "@/components/avatar";
+import { AvailabilityBadge } from "@/components/availability-badge";
 import { SimpleHeader } from "@/components/simple-header";
 import { createClient } from "@/lib/supabase/server";
 import type { Message } from "@/types/message";
@@ -67,7 +68,7 @@ export default async function MessagesPage() {
     ? await supabase
         .from("profiles")
         .select(
-          "id,email,display_name,year_level,programme,major,department,courses,avatar_url,verified,created_at",
+          "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at",
         )
         .in("id", peerIds)
     : { data: [] };
@@ -125,6 +126,9 @@ export default async function MessagesPage() {
                   />
                   <span className="conversation-person">
                     <strong>{conversation.person.display_name}</strong>
+                    <AvailabilityBadge
+                      status={conversation.person.availability_status}
+                    />
                     <small>
                       {conversation.person.programme || "Programme not listed"}
                     </small>

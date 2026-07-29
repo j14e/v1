@@ -23,7 +23,9 @@ const supabase = createClient(
 
 const { error: directoryError } = await supabase
   .from("directory_profiles")
-  .select("id,display_name,year_level,programme,major,department,courses,avatar_url")
+  .select(
+    "id,display_name,availability_status,year_level,programme,major,department,courses,avatar_url",
+  )
   .limit(1);
 
 if (directoryError) {

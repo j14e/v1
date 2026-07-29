@@ -411,6 +411,40 @@ textarea::placeholder {
   white-space: nowrap;
 }
 
+.availability-badge {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  border: 1px solid;
+  padding: 2px 5px;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.availability-badge.open_to_talk {
+  border-color: #7da489;
+  background: #edf8f0;
+  color: #245d34;
+}
+
+.availability-badge.busy {
+  border-color: #b8a66f;
+  background: #fff8df;
+  color: #6f5a1d;
+}
+
+.availability-dot {
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+  border-radius: 50%;
+  background: currentColor;
+}
+
 .avatar {
   position: relative;
   flex: 0 0 auto;
@@ -944,7 +978,7 @@ textarea::placeholder {
   gap: 10px;
 }
 
-.chat-person span {
+.chat-person > span {
   display: grid;
   gap: 2px;
 }

@@ -22,7 +22,7 @@ export default async function ConversationPage({
   if (id === user.id) redirect("/messages");
 
   const profileFields =
-    "id,email,display_name,year_level,programme,major,department,courses,avatar_url,verified,created_at";
+    "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,created_at";
 
   const [
     { data: ownProfile },
@@ -103,11 +103,13 @@ export default async function ConversationPage({
             id: currentUser.id,
             displayName: currentUser.display_name,
             avatarUrl: currentUser.avatar_url,
+            availabilityStatus: currentUser.availability_status,
           }}
           recipient={{
             id: recipient.id,
             displayName: recipient.display_name,
             avatarUrl: recipient.avatar_url,
+            availabilityStatus: recipient.availability_status,
           }}
           initialMessages={initialMessages}
         />

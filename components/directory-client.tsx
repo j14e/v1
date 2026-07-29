@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthDialog } from "@/components/auth-dialog";
 import { Avatar } from "@/components/avatar";
+import { AvailabilityBadge } from "@/components/availability-badge";
 import { createClient } from "@/lib/supabase/client";
 import { departments } from "@/lib/catalog";
 import type { Profile, SessionUser } from "@/types/profile";
@@ -33,6 +34,7 @@ export function DirectoryClient({
         !department || profile.department === department;
       const haystack = [
         profile.display_name,
+        profile.availability_status === "open_to_talk" ? "open to talk" : "busy",
         profile.year_level,
         profile.programme,
         profile.major,
@@ -228,6 +230,9 @@ export function DirectoryClient({
                       />
                       <span>
                         <strong>{profile.display_name}</strong>
+                        <AvailabilityBadge
+                          status={profile.availability_status}
+                        />
                         <small>
                           {user ? profile.email : "verified student"}
                         </small>

@@ -1,7 +1,15 @@
 import type { ReactNode } from "react";
 
 const directoryRows = ["one", "two", "three", "four", "five"];
-const detailRows = ["name", "year", "programme", "major", "department", "courses"];
+const detailRows = [
+  "name",
+  "availability",
+  "year",
+  "programme",
+  "major",
+  "department",
+  "courses",
+];
 const messageRows = ["first", "second", "third", "fourth"];
 const adminRows = ["member-one", "member-two", "member-three"];
 

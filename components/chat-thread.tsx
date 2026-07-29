@@ -10,13 +10,16 @@ import {
   type FormEvent,
 } from "react";
 import { Avatar } from "@/components/avatar";
+import { AvailabilityBadge } from "@/components/availability-badge";
 import { createClient } from "@/lib/supabase/client";
 import type { Message } from "@/types/message";
+import type { AvailabilityStatus } from "@/types/profile";
 
 type ChatPerson = {
   id: string;
   displayName: string;
   avatarUrl: string | null;
+  availabilityStatus: AvailabilityStatus;
 };
 
 type ChatThreadProps = {
@@ -327,6 +330,7 @@ export function ChatThread({
           />
           <span>
             <strong>{recipient.displayName}</strong>
+            <AvailabilityBadge status={recipient.availabilityStatus} />
             <small>private conversation</small>
           </span>
         </div>

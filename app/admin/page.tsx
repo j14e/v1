@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AdminAccessForm } from "@/components/admin-access-form";
 import { AdminMemberControls } from "@/components/admin-member-controls";
 import { Avatar } from "@/components/avatar";
+import { AvailabilityBadge } from "@/components/availability-badge";
 import { SimpleHeader } from "@/components/simple-header";
 import {
   createAdminClient,
@@ -10,6 +11,7 @@ import {
   hasValidAdminSession,
 } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/server";
+import type { AvailabilityStatus } from "@/types/profile";
 import { lockAdminAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +20,7 @@ type AdminProfile = {
   id: string;
   email: string;
   display_name: string;
+  availability_status: AvailabilityStatus;
   year_level: string;
   programme: string | null;
   major: string | null;
@@ -159,7 +162,7 @@ export default async function AdminPage() {
   const { data: profiles, error } = await admin
     .from("profiles")
     .select(
-      "id,email,display_name,year_level,programme,major,department,courses,avatar_url,verified,frozen,created_at",
+      "id,email,display_name,availability_status,year_level,programme,major,department,courses,avatar_url,verified,frozen,created_at",
     )
     .order("created_at", { ascending: true });
   if (error) throw error;
@@ -217,6 +220,9 @@ export default async function AdminPage() {
                           />
                           <span>
                             <strong>{member.display_name}</strong>
+                            <AvailabilityBadge
+                              status={member.availability_status}
+                            />
                             <small>{member.id}</small>
                           </span>
                         </span>
