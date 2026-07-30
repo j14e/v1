@@ -13,24 +13,6 @@ type OracleConnection = {
   created_at: string;
 };
 
-function getMatchReasons(profile: Profile, candidate: Profile) {
-  const reasons: string[] = [];
-  if (profile.year_level === candidate.year_level) reasons.push("same year");
-  if (profile.programme && profile.programme === candidate.programme) {
-    reasons.push("same programme");
-  }
-  if (profile.major && profile.major === candidate.major) {
-    reasons.push("same major");
-  }
-  if (profile.department && profile.department === candidate.department) {
-    reasons.push("same department");
-  }
-  if (candidate.courses.some((course) => profile.courses.includes(course))) {
-    reasons.push("shared courses");
-  }
-  return reasons;
-}
-
 export default async function OraclePage() {
   const supabase = await createClient();
   const {
@@ -96,7 +78,7 @@ export default async function OraclePage() {
         department: peer.department,
         courses: peer.courses,
         avatar_url: peer.avatar_url,
-        match_reasons: getMatchReasons(profile, peer),
+        match_reasons: [],
         connected_at: date,
       },
     ];
@@ -116,7 +98,7 @@ export default async function OraclePage() {
     <div className="site-shell">
       <SimpleHeader name={profile.display_name} />
       <main className="oracle-page">
-        <OracleMatcher profile={profile} initialState={initialState} />
+        <OracleMatcher initialState={initialState} />
       </main>
     </div>
   );

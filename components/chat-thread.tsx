@@ -358,8 +358,7 @@ export function ChatThread({
                   <span>
                     <strong>Connected by Connection Oracle</strong>
                     <small>
-                      You and {recipient.displayName} were introduced based on
-                      year and studies.
+                      You and {recipient.displayName} were randomly introduced.
                     </small>
                   </span>
                   <time dateTime={message.created_at}>

@@ -393,7 +393,7 @@ export function DirectoryClient({
                 O
               </div>
               <h2 id="homepage-oracle-title">Connection Oracle</h2>
-              <p>Match randomly based on profile.</p>
+              <p>Meet five randomly selected members.</p>
               <button
                 className="button oracle-quick-button"
                 type="button"

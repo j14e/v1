@@ -324,19 +324,6 @@ export function OracleLoadingSkeleton() {
             <SkeletonLine className="skeleton-status-line" />
           </div>
           <div className="oracle-intro">
-            <aside className="oracle-signal">
-              <div className="panel-heading">
-                <SkeletonLine className="skeleton-panel-title" />
-              </div>
-              <div className="skeleton-panel-body">
-                {["year", "programme", "major", "department"].map((row) => (
-                  <div className="skeleton-oracle-field" key={row}>
-                    <SkeletonLine className="short" />
-                    <SkeletonLine className="medium" />
-                  </div>
-                ))}
-              </div>
-            </aside>
             <div className="oracle-explanation">
               <SkeletonLine className="skeleton-heading-line" />
               <SkeletonLine className="long" />

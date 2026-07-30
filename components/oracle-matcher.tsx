@@ -6,7 +6,6 @@ import { runConnectionOracle } from "@/app/oracle/actions";
 import { Avatar } from "@/components/avatar";
 import { AvailabilityBadge } from "@/components/availability-badge";
 import type { OracleState } from "@/types/oracle";
-import type { Profile } from "@/types/profile";
 
 function formatConnectedDate(value: string) {
   return new Intl.DateTimeFormat("en-NZ", {
@@ -17,10 +16,8 @@ function formatConnectedDate(value: string) {
 }
 
 export function OracleMatcher({
-  profile,
   initialState,
 }: {
-  profile: Profile;
   initialState: OracleState;
 }) {
   const [state, formAction, pending] = useActionState(
@@ -33,46 +30,22 @@ export function OracleMatcher({
       <div className="profile-titlebar oracle-titlebar">
         <div>
           <h1>Connection Oracle</h1>
-          <small>five introductions, chosen from year and studies</small>
+          <small>five introductions, chosen completely at random</small>
         </div>
-        <span>member matching</span>
+        <span>random introductions</span>
       </div>
 
       <div className="oracle-intro">
-        <aside className="oracle-signal">
-          <div className="panel-heading">your signal</div>
-          <dl>
-            <div>
-              <dt>Year</dt>
-              <dd>{profile.year_level}</dd>
-            </div>
-            <div>
-              <dt>Programme</dt>
-              <dd>{profile.programme || "Not listed"}</dd>
-            </div>
-            <div>
-              <dt>Major</dt>
-              <dd>{profile.major || "Not listed"}</dd>
-            </div>
-            <div>
-              <dt>Department</dt>
-              <dd>{profile.department || "Not listed"}</dd>
-            </div>
-          </dl>
-          <Link href="/account">edit matching information</Link>
-        </aside>
-
         <div className="oracle-explanation">
-          <h2>Ask the directory for an introduction</h2>
+          <h2>Ask the directory for five random introductions</h2>
           <p>
             The Oracle selects up to five people you have not matched with
-            before. It looks for your year first, then programme, major,
-            department, and shared courses. Randomness decides between equally
-            suitable people.
+            before. Every verified, active, previously unconnected member has
+            an equal chance of being selected.
           </p>
           <ol>
-            <li>Your university profile supplies the matching signal.</li>
-            <li>Only verified, active members can be selected.</li>
+            <li>No year, programme, major, or course filters are used.</li>
+            <li>The draw is random among eligible members.</li>
             <li>
               Each match appears in Messages as a system connection notice.
             </li>
@@ -116,7 +89,7 @@ export function OracleMatcher({
           <div className="oracle-table">
             <div className="oracle-row oracle-header" aria-hidden="true">
               <span>person</span>
-              <span>why you matched</span>
+              <span>selection</span>
               <span>studies</span>
               <span>connected</span>
               <span />
@@ -135,13 +108,7 @@ export function OracleMatcher({
                   </span>
                 </span>
                 <span className="oracle-reasons">
-                  {match.match_reasons.length ? (
-                    match.match_reasons.map((reason) => (
-                      <small key={reason}>{reason}</small>
-                    ))
-                  ) : (
-                    <small>best available match</small>
-                  )}
+                  <small>randomly selected</small>
                 </span>
                 <span>
                   {match.year_level}

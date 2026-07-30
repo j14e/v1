@@ -2004,8 +2004,6 @@ textarea::placeholder {
 }
 
 .oracle-intro {
-  display: grid;
-  grid-template-columns: minmax(230px, 290px) minmax(0, 1fr);
   border-bottom: 1px solid var(--line-dark);
 }
 
