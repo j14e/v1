@@ -350,7 +350,7 @@ export function DirectoryClient({
                           <Avatar
                             name={profile.display_name}
                             url={profile.avatar_url}
-                            size="medium"
+                            size="large"
                           />
                           <span>
                             <strong>{profile.display_name}</strong>

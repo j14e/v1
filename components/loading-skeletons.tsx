@@ -98,7 +98,7 @@ export function DirectoryLoadingSkeleton() {
                 {["new-one", "new-two", "new-three"].map((member) => (
                   <article className="new-member-card" key={member}>
                     <div className="new-member-profile">
-                      <span className="skeleton-block skeleton-avatar" />
+                      <span className="skeleton-block skeleton-new-member-photo" />
                       <span className="skeleton-person-lines">
                         <SkeletonLine className="medium" />
                         <SkeletonLine className="short" />

@@ -396,7 +396,7 @@ textarea:focus-visible {
 
 .homepage-discovery-grid {
   min-height: 0;
-  flex: 0 0 218px;
+  flex: 0 0 258px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 230px;
   gap: 10px;
@@ -461,7 +461,7 @@ textarea:focus-visible {
 
 .new-member-card {
   min-width: 0;
-  flex: 0 0 190px;
+  flex: 0 0 156px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -471,16 +471,17 @@ textarea:focus-visible {
 
 .new-member-profile {
   min-width: 0;
-  display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   border: 0;
   background: transparent;
   color: var(--ink);
   cursor: pointer;
-  padding: 9px 8px 7px;
-  text-align: left;
+  padding: 8px 8px 6px;
+  text-align: center;
 }
 
 .new-member-profile:hover {
@@ -489,6 +490,13 @@ textarea:focus-visible {
 
 .new-member-profile > span:last-child {
   min-width: 0;
+  width: 100%;
+}
+
+.new-member-profile .avatar-large {
+  width: 92px;
+  height: 92px;
+  font-size: 25px;
 }
 
 .new-member-profile strong,
@@ -501,13 +509,13 @@ textarea:focus-visible {
 
 .new-member-profile strong {
   color: var(--blue-800);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .new-member-profile small {
-  margin-top: 3px;
+  margin-top: 2px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .say-hi-button {
@@ -1868,6 +1876,18 @@ textarea::placeholder {
   border-radius: 0;
 }
 
+.skeleton-new-member-photo {
+  width: 92px;
+  height: 92px;
+  border-radius: 0;
+}
+
+.new-member-profile .skeleton-person-lines {
+  width: 100%;
+  justify-items: center;
+  gap: 5px;
+}
+
 .skeleton-oracle-mark {
   width: 31px;
   height: 31px;
@@ -2356,7 +2376,7 @@ textarea::placeholder {
   }
 
   .new-members-panel {
-    min-height: 218px;
+    min-height: 258px;
   }
 
   .oracle-quick-panel {
