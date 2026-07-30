@@ -396,7 +396,7 @@ textarea:focus-visible {
 
 .homepage-discovery-grid {
   min-height: 0;
-  flex: 0 0 258px;
+  flex: 0 0 264px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 230px;
   gap: 10px;
@@ -2376,7 +2376,7 @@ textarea::placeholder {
   }
 
   .new-members-panel {
-    min-height: 258px;
+    min-height: 264px;
   }
 
   .oracle-quick-panel {
