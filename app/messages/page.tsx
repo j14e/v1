@@ -158,8 +158,7 @@ export default async function MessagesPage() {
             <div className="empty-messages">
               <strong>No messages yet.</strong>
               <p>
-                Open any member profile and choose “send message”. You do not
-                need to be friends first.
+                Open any member profile and choose “send message”.
               </p>
               <Link className="button inline-button" href="/">
                 Browse directory

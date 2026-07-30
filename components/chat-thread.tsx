@@ -475,9 +475,6 @@ export function ChatThread({
               ? `stop voice note (${recordingSeconds}s)`
               : "record voice note"}
           </button>
-          <span className="composer-note">
-            Friendship is not required to send a message.
-          </span>
         </div>
         {error ? <p className="form-error composer-error">{error}</p> : null}
       </form>

@@ -1531,12 +1531,6 @@ textarea::placeholder {
   color: white;
 }
 
-.composer-note {
-  margin-left: auto;
-  color: var(--muted);
-  font-size: 11px;
-}
-
 .composer-error {
   margin-top: 8px;
 }
@@ -2480,11 +2474,6 @@ textarea::placeholder {
 
   .message-history {
     max-height: none;
-  }
-
-  .composer-note {
-    flex-basis: 100%;
-    margin-left: 0;
   }
 
   .admin-page {
