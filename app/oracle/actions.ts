@@ -37,6 +37,7 @@ export async function runConnectionOracle(
   }
 
   const matches = (data ?? []) as OracleMatch[];
+  revalidatePath("/");
   revalidatePath("/oracle");
   revalidatePath("/messages");
 

@@ -86,6 +86,37 @@ export function DirectoryLoadingSkeleton() {
               <SkeletonLine className="skeleton-subheading-line" />
             </div>
           </div>
+          <div className="homepage-discovery-grid">
+            <section className="new-members-panel">
+              <div className="discovery-titlebar">
+                <div>
+                  <SkeletonLine className="medium" />
+                  <SkeletonLine className="short" />
+                </div>
+              </div>
+              <div className="new-members-scroll">
+                {["new-one", "new-two", "new-three"].map((member) => (
+                  <article className="new-member-card" key={member}>
+                    <div className="new-member-profile">
+                      <span className="skeleton-block skeleton-avatar" />
+                      <span className="skeleton-person-lines">
+                        <SkeletonLine className="medium" />
+                        <SkeletonLine className="short" />
+                        <SkeletonLine className="medium" />
+                      </span>
+                    </div>
+                    <span className="skeleton-block skeleton-new-member-button" />
+                  </article>
+                ))}
+              </div>
+            </section>
+            <section className="oracle-quick-panel">
+              <span className="skeleton-block skeleton-oracle-mark" />
+              <SkeletonLine className="medium" />
+              <SkeletonLine className="long" />
+              <span className="skeleton-block skeleton-button-block" />
+            </section>
+          </div>
           <div className="directory-tools">
             <SkeletonLine className="skeleton-label-line" />
             <span className="skeleton-block skeleton-input-block" />

@@ -130,10 +130,19 @@ export default async function HomePage() {
     ...profile,
     email: profile.email ?? "",
   }));
+  const newMembers = [...directoryProfiles]
+    .filter((profile) => profile.id !== user?.id)
+    .sort(
+      (left, right) =>
+        new Date(right.created_at).getTime() -
+        new Date(left.created_at).getTime(),
+    )
+    .slice(0, 12);
 
   return (
     <DirectoryClient
       profiles={directoryProfiles}
+      newMembers={newMembers}
       user={sessionUser}
       ownProfile={ownProfile}
       inbox={inbox}

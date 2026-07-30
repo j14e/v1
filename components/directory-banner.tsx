@@ -90,7 +90,7 @@ export function DirectoryBanner({
               src={featured.public_url}
               alt={featured.file_name}
               fill
-              sizes="(max-width: 780px) 280px, 220px"
+              sizes="(max-width: 780px) 280px, 300px"
             />
           ) : (
             <span className="banner-empty-mark" aria-hidden="true">

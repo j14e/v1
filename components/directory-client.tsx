@@ -15,11 +15,14 @@ import type { Profile, SessionUser } from "@/types/profile";
 
 type DirectoryClientProps = {
   profiles: Profile[];
+  newMembers: Profile[];
   user: SessionUser;
   ownProfile: Profile | null;
   inbox: InboxItem[];
   featuredBanner: BannerSubmission | null;
 };
+
+type WaveState = "sending" | "sent" | "error";
 
 function inboxPreview(item: InboxItem, currentUserId: string) {
   if (item.latest.message_type === "connection") {
@@ -42,6 +45,7 @@ function formatInboxTime(value: string) {
 
 export function DirectoryClient({
   profiles,
+  newMembers,
   user,
   ownProfile,
   inbox,
@@ -53,6 +57,10 @@ export function DirectoryClient({
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
   const [departmentsOpen, setDepartmentsOpen] = useState(false);
+  const [waveStates, setWaveStates] = useState<Record<string, WaveState>>({});
+  const [oracleBusy, setOracleBusy] = useState(false);
+  const [oracleMessage, setOracleMessage] = useState("");
+  const [oracleError, setOracleError] = useState("");
 
   const filteredProfiles = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -92,6 +100,59 @@ export function DirectoryClient({
     const supabase = createClient();
     await supabase.auth.signOut();
     window.location.reload();
+  }
+
+  async function sayHi(profile: Profile) {
+    if (!user) {
+      showAuth("signin");
+      return;
+    }
+    if (!ownProfile || profile.id === user.id) return;
+
+    setWaveStates((states) => ({ ...states, [profile.id]: "sending" }));
+    const supabase = createClient();
+    const { error } = await supabase.from("messages").insert({
+      sender_id: user.id,
+      recipient_id: profile.id,
+      message_type: "member",
+      body: `${ownProfile.display_name} waved at you`,
+    });
+
+    setWaveStates((states) => ({
+      ...states,
+      [profile.id]: error ? "error" : "sent",
+    }));
+    if (!error) router.refresh();
+  }
+
+  async function runOracle() {
+    if (!user) {
+      showAuth("signin");
+      return;
+    }
+
+    setOracleBusy(true);
+    setOracleMessage("");
+    setOracleError("");
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc("run_connection_oracle");
+
+    if (error) {
+      setOracleError(
+        error.message === "A verified, active profile is required."
+          ? error.message
+          : "The Oracle could not complete the match. Try again.",
+      );
+    } else {
+      const count = data?.length ?? 0;
+      setOracleMessage(
+        count
+          ? `${count} new ${count === 1 ? "connection" : "connections"} added to your inbox.`
+          : "No new matches are available right now.",
+      );
+      router.refresh();
+    }
+    setOracleBusy(false);
   }
 
   return (
@@ -261,6 +322,98 @@ export function DirectoryClient({
                 a profile, send a message, or add someone as a friend.
               </p>
             </div>
+          </div>
+
+          <div className="homepage-discovery-grid">
+            <section
+              className="new-members-panel"
+              aria-labelledby="new-members-title"
+            >
+              <div className="discovery-titlebar">
+                <div>
+                  <h2 id="new-members-title">Newly joined members</h2>
+                  <p>Meet the latest people added to the directory.</p>
+                </div>
+                <span>{newMembers.length} latest</span>
+              </div>
+              {newMembers.length ? (
+                <div className="new-members-scroll">
+                  {newMembers.map((profile) => {
+                    const waveState = waveStates[profile.id];
+                    return (
+                      <article className="new-member-card" key={profile.id}>
+                        <button
+                          className="new-member-profile"
+                          type="button"
+                          onClick={() => openProfile(profile.id)}
+                        >
+                          <Avatar
+                            name={profile.display_name}
+                            url={profile.avatar_url}
+                            size="medium"
+                          />
+                          <span>
+                            <strong>{profile.display_name}</strong>
+                            <small>{profile.major || "Major not listed"}</small>
+                            <small>
+                              {profile.programme || "Studies not listed"}
+                            </small>
+                          </span>
+                        </button>
+                        <button
+                          className="say-hi-button"
+                          type="button"
+                          disabled={waveState === "sending" || waveState === "sent"}
+                          onClick={() => void sayHi(profile)}
+                        >
+                          {waveState === "sending"
+                            ? "sending..."
+                            : waveState === "sent"
+                              ? "waved"
+                              : waveState === "error"
+                                ? "try again"
+                                : "say hi"}
+                        </button>
+                      </article>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="new-members-empty">
+                  New members will appear here as they join.
+                </p>
+              )}
+            </section>
+
+            <section
+              className="oracle-quick-panel"
+              aria-labelledby="homepage-oracle-title"
+            >
+              <div className="oracle-quick-mark" aria-hidden="true">
+                O
+              </div>
+              <h2 id="homepage-oracle-title">Connection Oracle</h2>
+              <p>Match randomly based on profile.</p>
+              <button
+                className="button oracle-quick-button"
+                type="button"
+                disabled={oracleBusy}
+                onClick={() => void runOracle()}
+              >
+                {oracleBusy ? "matching..." : "match now"}
+              </button>
+              {user ? <Link href="/oracle">open full Oracle</Link> : null}
+              {oracleError ? (
+                <small className="oracle-quick-error" role="alert">
+                  {oracleError}
+                </small>
+              ) : null}
+              {oracleMessage ? (
+                <small className="oracle-quick-success" role="status">
+                  {oracleMessage}
+                </small>
+              ) : null}
+            </section>
           </div>
 
           <div className="directory-tools">
