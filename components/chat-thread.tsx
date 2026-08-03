@@ -350,15 +350,15 @@ export function ChatThread({
                 <article
                   className="connection-message"
                   key={message.id}
-                  aria-label={`Connected with ${recipient.displayName} by Connection Oracle`}
+                  aria-label={`Connected with ${recipient.displayName}`}
                 >
                   <span className="connection-message-mark" aria-hidden="true">
                     O
                   </span>
                   <span>
-                    <strong>Connected by Connection Oracle</strong>
+                    <strong>Connection notice</strong>
                     <small>
-                      You and {recipient.displayName} were randomly introduced.
+                      You and {recipient.displayName} were introduced.
                     </small>
                   </span>
                   <time dateTime={message.created_at}>

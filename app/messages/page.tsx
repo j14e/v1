@@ -17,7 +17,7 @@ type Conversation = {
 
 function messagePreview(message: Message) {
   if (message.message_type === "connection") {
-    return "Connected by Connection Oracle";
+    return "Connection notice";
   }
   if (message.body) return message.body;
   if (message.media_type === "image") return "sent an image";

@@ -50,20 +50,20 @@ if (!privateMessageError) {
   throw new Error("Anonymous access can read private messages.");
 }
 
-const { error: privateOracleError } = await supabase
+const { error: privateConnectionHistoryError } = await supabase
   .from("oracle_connections")
   .select("id")
   .limit(1);
 
-if (!privateOracleError) {
-  throw new Error("Anonymous access can read Oracle connections.");
+if (!privateConnectionHistoryError) {
+  throw new Error("Anonymous access can read private connection history.");
 }
 
-const { error: anonymousOracleRunError } =
+const { error: removedConnectionRunError } =
   await supabase.rpc("run_connection_oracle");
 
-if (!anonymousOracleRunError) {
-  throw new Error("Anonymous users can run Connection Oracle.");
+if (!removedConnectionRunError) {
+  throw new Error("Removed connection matching function is still callable.");
 }
 
 const { error: bannerReadError } = await supabase
