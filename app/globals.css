@@ -2980,9 +2980,24 @@ textarea:focus-visible {
 }
 
 @media (max-width: 800px) {
+  .sona-app-shell {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    display: grid;
+    grid-template-areas:
+      "header"
+      "content"
+      "tabs";
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   .sona-topbar {
-    min-height: 58px;
-    padding: 9px 14px;
+    grid-area: header;
+    min-height: calc(58px + env(safe-area-inset-top));
+    padding: max(9px, env(safe-area-inset-top)) 14px 9px;
   }
 
   .sona-wordmark {
@@ -3004,10 +3019,15 @@ textarea:focus-visible {
   }
 
   .sona-tabs {
-    top: 0;
+    grid-area: tabs;
+    position: relative;
+    top: auto;
     grid-template-columns: repeat(3, 1fr);
     gap: 3px;
-    padding: 7px 10px;
+    padding: 7px 10px max(7px, env(safe-area-inset-bottom));
+    border-top: 1px solid #e2d9f2;
+    border-bottom: 0;
+    box-shadow: 0 -8px 24px rgba(78, 54, 121, 0.08);
   }
 
   .sona-tabs button {
@@ -3015,7 +3035,22 @@ textarea:focus-visible {
   }
 
   .sona-main {
-    padding: 16px 10px 28px;
+    grid-area: content;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    padding: 12px 10px 10px;
+  }
+
+  .sona-main > .sona-section {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .sona-main > .sona-section:not(.sona-connect-section) {
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .sona-section-heading {
@@ -3033,17 +3068,35 @@ textarea:focus-visible {
   }
 
   .sona-directory-layout {
-    display: block;
+    min-height: 0;
+    flex: 1;
+    display: flex;
+  }
+
+  .sona-directory-section {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sona-skeleton-shell .sona-main {
+    display: flex;
+    flex-direction: column;
   }
 
   .sona-directory-column {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     border-radius: 15px;
   }
 
   .sona-search-wrap {
-    position: sticky;
+    position: relative;
     z-index: 2;
-    top: 52px;
+    top: auto;
+    flex: 0 0 auto;
     grid-template-columns: 1fr auto;
     gap: 7px;
     padding: 10px;
@@ -3058,8 +3111,9 @@ textarea:focus-visible {
   }
 
   .sona-directory-list {
-    max-height: 62vh;
-    min-height: 420px;
+    min-height: 0;
+    max-height: none;
+    flex: 1;
   }
 
   .sona-directory-card {
@@ -3074,6 +3128,7 @@ textarea:focus-visible {
   }
 
   .sona-connect-hero {
+    flex: 0 0 auto;
     padding: 23px 18px;
   }
 
@@ -3082,11 +3137,32 @@ textarea:focus-visible {
   }
 
   .sona-history-card {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     border-radius: 16px;
   }
 
+  .sona-history-card > .sona-empty-state {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+  }
+
   .sona-chat-list {
-    max-height: 58vh;
+    min-height: 0;
+    max-height: none;
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .sona-connect-section {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .sona-profile-cover {

@@ -159,7 +159,7 @@ export function DirectoryClient({
 
       <main className="sona-main">
         {activeSection === "directory" ? (
-          <section className="sona-section" aria-labelledby="directory-title">
+          <section className="sona-section sona-directory-section" aria-labelledby="directory-title">
             <div className="sona-section-heading">
               <div>
                 <span className="sona-eyebrow">SONA member network</span>
