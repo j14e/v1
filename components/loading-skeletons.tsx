@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SonaLogo } from "@/components/sona-logo";
 
 const rows = ["one", "two", "three", "four", "five", "six"];
 
@@ -10,7 +11,7 @@ function SkeletonHeader() {
   return (
     <>
       <header className="sona-topbar sona-skeleton-topbar">
-        <span className="sona-wordmark">SONA</span>
+        <SonaLogo linked={false} />
         <div className="sona-skeleton-session">
           <Bone className="sona-bone-name" />
           <Bone className="sona-bone-pill" />

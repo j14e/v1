@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthDialog } from "@/components/auth-dialog";
 import { Avatar } from "@/components/avatar";
+import { SonaLogo } from "@/components/sona-logo";
 import { createClient } from "@/lib/supabase/client";
 import type { InboxItem } from "@/types/inbox";
 import type { Profile, SessionUser } from "@/types/profile";
@@ -161,7 +162,7 @@ export function DirectoryClient({
   return (
     <div className="sona-app-shell">
       <header className="sona-topbar">
-        <Link className="sona-wordmark" href="/">SONA</Link>
+        <SonaLogo />
         <div className="sona-session">
           {user ? (
             <>

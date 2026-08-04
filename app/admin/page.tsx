@@ -4,6 +4,7 @@ import { AdminMemberControls } from "@/components/admin-member-controls";
 import { Avatar } from "@/components/avatar";
 import { AvailabilityBadge } from "@/components/availability-badge";
 import { SimpleHeader } from "@/components/simple-header";
+import { SonaLogo } from "@/components/sona-logo";
 import {
   createAdminClient,
   getAdminSettings,
@@ -44,7 +45,7 @@ function PublicAdminHeader() {
   return (
     <>
       <header className="sona-topbar">
-        <Link className="sona-wordmark" href="/">SONA</Link>
+        <SonaLogo />
       </header>
       <nav className="sona-tabs sona-link-tabs" aria-label="Main navigation">
         <Link href="/">Directory</Link>

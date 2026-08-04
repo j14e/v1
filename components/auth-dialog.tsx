@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { MinimalSignupForm } from "@/components/minimal-signup-form";
+import { SonaLogo } from "@/components/sona-logo";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "signup" | "signin";
@@ -84,7 +85,7 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
       <section className="auth-dialog sona-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-title" onMouseDown={(event) => event.stopPropagation()}>
         <div className="sona-dialog-heading">
           <div>
-            <span className="sona-dialog-mark">SONA</span>
+            <SonaLogo variant="dialog" />
             <strong id="auth-title">{mode === "signup" ? "Join the directory" : "Sign in"}</strong>
           </div>
           <button className="sona-icon-button" type="button" onClick={onClose} aria-label="Close">×</button>

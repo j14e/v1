@@ -4201,3 +4201,48 @@ textarea:focus-visible {
   background: linear-gradient(100deg, #dddddd 20%, #f1f1f1 38%, #dddddd 56%);
   background-size: 220% 100%;
 }
+
+.sona-logo-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000000;
+}
+
+.sona-logo-crop {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3.08 / 1;
+  background: #000000;
+}
+
+.sona-logo-header {
+  width: 112px;
+}
+
+.sona-logo-dialog {
+  width: 82px;
+}
+
+.sona-logo-page {
+  width: 180px;
+}
+
+.sona-logo-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 138.5%;
+  max-width: none;
+  height: auto;
+  transform: translate(-13.85%, -38.44%);
+}
+
+@media (max-width: 520px) {
+  .sona-logo-header {
+    width: 96px;
+  }
+}

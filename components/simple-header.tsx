@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SonaLogo } from "@/components/sona-logo";
 import { createClient } from "@/lib/supabase/client";
 
 export function SimpleHeader({ name }: { name: string }) {
@@ -13,7 +14,7 @@ export function SimpleHeader({ name }: { name: string }) {
   return (
     <>
       <header className="sona-topbar">
-        <Link className="sona-wordmark" href="/">SONA</Link>
+        <SonaLogo />
         <div className="sona-session">
           <span>{name}</span>
           <button type="button" onClick={signOut}>Sign out</button>
