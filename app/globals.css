@@ -2248,16 +2248,16 @@ textarea::placeholder {
 
 /* SONA interface */
 :root {
-  --blue-950: #33235c;
-  --blue-900: #6046a5;
-  --blue-800: #7356ba;
-  --blue-700: #8568ca;
-  --blue-100: #f0eaff;
-  --ink: #29243a;
-  --muted: #746d86;
-  --line: #ddd4ef;
-  --line-dark: #c9bce3;
-  --shell: #f7f3ff;
+  --blue-950: #302d35;
+  --blue-900: #45404d;
+  --blue-800: #5d5669;
+  --blue-700: #706778;
+  --blue-100: #efedf2;
+  --ink: #26242a;
+  --muted: #6d6972;
+  --line: #d8d5db;
+  --line-dark: #c5c1c9;
+  --shell: #f1f1f2;
 }
 
 html,
@@ -2277,7 +2277,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline-color: #a78bfa;
+  outline-color: #8b8195;
 }
 
 .button,
