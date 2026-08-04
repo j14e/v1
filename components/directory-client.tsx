@@ -60,7 +60,7 @@ function NewMembersStrip({
 }
 
 function inboxPreview(item: InboxItem, currentUserId: string) {
-  if (item.latest.message_type === "connection") return "Connected on SONA";
+  if (item.latest.message_type === "connection") return "Connected!";
   const prefix = item.latest.sender_id === currentUserId ? "You: " : "";
   if (item.latest.body) return `${prefix}${item.latest.body}`;
   if (item.latest.media_type === "image") return `${prefix}sent an image`;
@@ -158,7 +158,7 @@ export function DirectoryClient({
     if (error) setConnectError(error.message);
     else if (!match) setConnectError("There is nobody available to connect with yet.");
     else {
-      setConnectNotice(`You connected with ${match.display_name}.`);
+      setConnectNotice("Connected!");
       router.refresh();
     }
     setConnecting(false);

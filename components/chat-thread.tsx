@@ -350,16 +350,13 @@ export function ChatThread({
                 <article
                   className="connection-message"
                   key={message.id}
-                  aria-label={`Connected with ${recipient.displayName}`}
+                  aria-label="Connected!"
                 >
                   <span className="connection-message-mark" aria-hidden="true">
                     S
                   </span>
                   <span>
-                    <strong>Connected on SONA</strong>
-                    <small>
-                      You and {recipient.displayName} connected randomly.
-                    </small>
+                    <strong>Connected!</strong>
                   </span>
                   <time dateTime={message.created_at}>
                     {formatMessageTime(message.created_at)}

@@ -17,7 +17,7 @@ type Conversation = {
 
 function messagePreview(message: Message) {
   if (message.message_type === "connection") {
-    return "Connected on SONA";
+    return "Connected!";
   }
   if (message.body) return message.body;
   if (message.media_type === "image") return "sent an image";
