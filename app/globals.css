@@ -4059,10 +4059,10 @@ textarea:focus-visible {
   outline-color: #707070;
 }
 
-.topbar,
 .sona-topbar,
 .sona-skeleton-topbar {
-  background: #000000;
+  background: #b4fa02;
+  color: #000000;
 }
 
 .sona-dialog-heading {
@@ -4093,6 +4093,16 @@ textarea:focus-visible {
 .sona-back-link,
 .sona-eyebrow {
   color: #3f3f3f;
+}
+
+.sona-session button {
+  background: rgba(0, 0, 0, 0.12);
+  color: #000000;
+}
+
+.sona-session .sona-join-button {
+  background: #ffffff;
+  color: #000000;
 }
 
 .utility-strip,
@@ -4245,11 +4255,18 @@ textarea:focus-visible {
   transform: translate(-13.85%, -38.44%);
 }
 
+.sona-logo-link-header,
+.sona-logo-link-header .sona-logo-crop,
 .sona-logo-link-page,
 .sona-logo-link-page .sona-logo-crop {
   background: transparent;
 }
 
+.sona-logo-header {
+  aspect-ratio: 2.93 / 1;
+}
+
+.sona-logo-header .sona-logo-image,
 .sona-logo-page .sona-logo-image {
   width: 137%;
   transform: translate(-13.48%, -37.64%);

@@ -7,15 +7,15 @@ type SonaLogoProps = {
 };
 
 export function SonaLogo({ variant = "header", linked = true }: SonaLogoProps) {
-  const isPageLogo = variant === "page";
+  const usesTransparentLogo = variant === "header" || variant === "page";
   const logo = (
     <span className={`sona-logo-crop sona-logo-${variant}`}>
       <Image
         className="sona-logo-image"
-        src={isPageLogo ? "/sona-logo-transparent.png" : "/sona-logo.png"}
+        src={usesTransparentLogo ? "/sona-logo-transparent.png" : "/sona-logo.png"}
         alt=""
-        width={isPageLogo ? 1254 : 960}
-        height={isPageLogo ? 1254 : 960}
+        width={usesTransparentLogo ? 1254 : 960}
+        height={usesTransparentLogo ? 1254 : 960}
         sizes={variant === "page" ? "180px" : variant === "dialog" ? "82px" : "112px"}
         priority
       />
