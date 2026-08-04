@@ -25,6 +25,33 @@ type ConnectedMember = {
   display_name: string;
 };
 
+function NewMembersStrip({
+  profiles,
+  onOpen,
+}: {
+  profiles: Profile[];
+  onOpen: (profileId: string) => void;
+}) {
+  if (!profiles.length) return null;
+
+  return (
+    <div className="sona-new-members" aria-label="New members">
+      {profiles.map((profile) => (
+        <button
+          className="sona-new-member"
+          type="button"
+          key={profile.id}
+          onClick={() => onOpen(profile.id)}
+        >
+          <Avatar name={profile.display_name} url={profile.avatar_url} />
+          <strong>{profile.display_name}</strong>
+          <small>{profile.courses.length ? profile.courses.slice(0, 2).join(", ") : profile.year_level}</small>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function inboxPreview(item: InboxItem, currentUserId: string) {
   if (item.latest.message_type === "connection") return "Connected on SONA";
   const prefix = item.latest.sender_id === currentUserId ? "You: " : "";
@@ -79,6 +106,14 @@ export function DirectoryClient({
         .includes(needle),
     );
   }, [profiles, query]);
+
+  const newMembers = useMemo(
+    () => profiles
+      .filter((profile) => !profile.is_demo)
+      .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+      .slice(0, 12),
+    [profiles],
+  );
 
   function showAuth(mode: "signup" | "signin") {
     setAuthMode(mode);
@@ -158,28 +193,23 @@ export function DirectoryClient({
       </nav>
 
       <main className="sona-main">
+        <NewMembersStrip profiles={newMembers} onOpen={openProfile} />
+
         {activeSection === "directory" ? (
           <section className="sona-section sona-directory-section" aria-labelledby="directory-title">
-            <div className="sona-section-heading">
-              <div>
-                <span className="sona-eyebrow">SONA member network</span>
-                <h1 id="directory-title">Student directory</h1>
-              </div>
-              <span>{profiles.length} members</span>
-            </div>
+            <h1 className="visually-hidden" id="directory-title">Directory</h1>
 
             <div className="sona-directory-layout">
               <div className="sona-directory-column">
                 <div className="sona-search-wrap">
-                  <label htmlFor="sona-directory-search">Search the directory</label>
                   <input
                     id="sona-directory-search"
                     type="search"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Name, course, study or year"
+                    placeholder="Search"
+                    aria-label="Search directory"
                   />
-                  <small>{filteredProfiles.length} result{filteredProfiles.length === 1 ? "" : "s"}</small>
                 </div>
 
                 <div className="sona-directory-list" aria-label="Directory profiles">
@@ -203,8 +233,7 @@ export function DirectoryClient({
                     </button>
                   )) : (
                     <div className="sona-empty-state">
-                      <strong>No matching profiles</strong>
-                      <p>Try a name, course code, subject, programme, or year.</p>
+                      <strong>No profiles found</strong>
                     </div>
                   )}
                 </div>
@@ -214,13 +243,10 @@ export function DirectoryClient({
         ) : null}
 
         {activeSection === "connect" ? (
-          <section className="sona-section sona-connect-section" aria-labelledby="connect-title">
+          <section className="sona-section sona-connect-section" aria-label="Connect">
             <div className="sona-connect-hero">
-              <span className="sona-eyebrow">Meet someone new</span>
-              <h1 id="connect-title">Connect</h1>
-              <p>Get introduced to one random person from the SONA directory.</p>
               <button className="button sona-connect-button" type="button" disabled={connecting} onClick={() => void connectRandomly()}>
-                {connecting ? "Connecting…" : "Connect me randomly"}
+                {connecting ? "Connecting…" : "Random connect"}
               </button>
               {connectNotice ? <p className="sona-connect-success" role="status">{connectNotice}</p> : null}
               {connectError ? <p className="form-error" role="alert">{connectError}</p> : null}
@@ -228,7 +254,7 @@ export function DirectoryClient({
 
             <div className="sona-history-card">
               <div className="sona-history-heading">
-                <h2>Chat history</h2>
+                <h2>Chats</h2>
                 {user && inbox.length ? <span>{inbox.length} conversation{inbox.length === 1 ? "" : "s"}</span> : null}
               </div>
               {user ? (
@@ -249,12 +275,10 @@ export function DirectoryClient({
                     ))}
                   </div>
                 ) : (
-                  <div className="sona-empty-state"><strong>No chats yet</strong><p>Use the connect button or open a directory profile to start one.</p></div>
+                  <div className="sona-empty-state"><strong>No chats yet</strong></div>
                 )
               ) : (
                 <div className="sona-empty-state">
-                  <strong>Sign in to connect</strong>
-                  <p>Your connections and chat history will appear here.</p>
                   <button className="button sona-primary-button" type="button" onClick={() => showAuth("signin")}>Sign in</button>
                 </div>
               )}
@@ -270,7 +294,6 @@ export function DirectoryClient({
                 <div className="sona-profile-content">
                   <Avatar name={ownProfile.display_name} url={ownProfile.avatar_url} size="large" />
                   <div className="sona-profile-title">
-                    <span className="sona-eyebrow">Your profile</span>
                     <h1 id="profile-title">{ownProfile.display_name}</h1>
                     <p>{ownProfile.email}</p>
                   </div>
@@ -286,9 +309,7 @@ export function DirectoryClient({
               </div>
             ) : (
               <div className="sona-profile-card sona-profile-guest">
-                <span className="sona-eyebrow">Your space on SONA</span>
-                <h1 id="profile-title">Create your profile</h1>
-                <p>Join the directory, add your studies, and start meeting other students.</p>
+                <h1 id="profile-title">Create profile</h1>
                 <div className="sona-guest-actions">
                   <button className="button sona-primary-button" type="button" onClick={() => showAuth("signup")}>Join SONA</button>
                   <button className="sona-secondary-button" type="button" onClick={() => showAuth("signin")}>Sign in</button>

@@ -17,12 +17,14 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [signInMethod, setSignInMethod] = useState<"password" | "link">("password");
 
   useEffect(() => {
     if (open) {
       setMode(initialMode);
       setError("");
       setNotice("");
+      setSignInMethod("password");
     }
   }, [initialMode, open]);
 
@@ -44,6 +46,7 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
     setNotice("");
     const formData = new FormData(event.currentTarget);
     const email = String(formData.get("email")).trim().toLowerCase();
+    const password = String(formData.get("password") ?? "");
 
     if (!email.endsWith("@aucklanduni.ac.nz")) {
       setError("Use your @aucklanduni.ac.nz student email.");
@@ -52,16 +55,27 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
     }
 
     const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: false,
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
-      },
-    });
+    if (signInMethod === "password") {
+      if (!password) {
+        setError("Enter your password.");
+        setBusy(false);
+        return;
+      }
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) setError(signInError.message);
+      else window.location.href = "/";
+    } else {
+      const { error: signInError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
+        },
+      });
 
-    if (signInError) setError(signInError.message);
-    else setNotice("Check your student inbox for your SONA sign-in link.");
+      if (signInError) setError(signInError.message);
+      else setNotice("Check your student inbox for your SONA sign-in link.");
+    }
     setBusy(false);
   }
 
@@ -83,14 +97,29 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
             <MinimalSignupForm compact />
           ) : (
             <form className="sona-signin-form" onSubmit={handleSignIn}>
-              <p>We will email you a secure sign-in link.</p>
               <label>
                 Student email
                 <input name="email" type="email" required placeholder="you@aucklanduni.ac.nz" autoComplete="email" />
               </label>
+              {signInMethod === "password" ? (
+                <label>
+                  Password
+                  <input name="password" type="password" required autoComplete="current-password" />
+                </label>
+              ) : null}
               {error ? <p className="form-error" role="alert">{error}</p> : null}
               <button className="button sona-primary-button" type="submit" disabled={busy}>
-                {busy ? "Sending link…" : "Email me a sign-in link"}
+                {busy ? (signInMethod === "password" ? "Signing in…" : "Sending link…") : (signInMethod === "password" ? "Sign in" : "Email sign-in link")}
+              </button>
+              <button
+                className="sona-signin-method"
+                type="button"
+                onClick={() => {
+                  setSignInMethod(signInMethod === "password" ? "link" : "password");
+                  setError("");
+                }}
+              >
+                {signInMethod === "password" ? "Use an email link" : "Use a password"}
               </button>
             </form>
           )}

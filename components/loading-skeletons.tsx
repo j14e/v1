@@ -37,29 +37,23 @@ function SkeletonShell({ children }: { children: ReactNode }) {
   );
 }
 
-function SkeletonTitle() {
-  return (
-    <div className="sona-skeleton-title">
-      <div>
-        <Bone className="sona-bone-eyebrow" />
-        <Bone className="sona-bone-title" />
-      </div>
-      <Bone className="sona-bone-count" />
-    </div>
-  );
-}
-
 export function DirectoryLoadingSkeleton() {
   return (
     <SkeletonShell>
       <main className="sona-main">
-        <SkeletonTitle />
+        <div className="sona-new-members sona-new-members-skeleton">
+          {rows.slice(0, 5).map((row) => (
+            <div className="sona-new-member" key={row}>
+              <Bone className="sona-bone-new-avatar" />
+              <Bone className="sona-bone-new-name" />
+              <Bone className="sona-bone-new-course" />
+            </div>
+          ))}
+        </div>
         <div className="sona-directory-layout">
           <section className="sona-directory-column sona-skeleton-directory">
             <div className="sona-skeleton-search">
-              <Bone className="sona-bone-label" />
               <Bone className="sona-bone-input" />
-              <Bone className="sona-bone-count" />
             </div>
             <div className="sona-skeleton-member-list">
               {rows.map((row) => (

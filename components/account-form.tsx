@@ -14,6 +14,9 @@ export function AccountForm({ profile }: { profile: Profile }) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [passwordBusy, setPasswordBusy] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   async function uploadAvatar(file: File) {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
@@ -93,6 +96,35 @@ export function AccountForm({ profile }: { profile: Profile }) {
     setBusy(false);
   }
 
+  async function savePassword(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const password = String(formData.get("password") ?? "");
+    const confirmation = String(formData.get("password_confirmation") ?? "");
+
+    setPasswordError("");
+    setPasswordMessage("");
+    if (password.length < 8) {
+      setPasswordError("Use at least 8 characters.");
+      return;
+    }
+    if (password !== confirmation) {
+      setPasswordError("The passwords do not match.");
+      return;
+    }
+
+    setPasswordBusy(true);
+    const supabase = createClient();
+    const { error: updateError } = await supabase.auth.updateUser({ password });
+    if (updateError) setPasswordError(updateError.message);
+    else {
+      setPasswordMessage("Password saved. You can now sign in with email and password.");
+      form.reset();
+    }
+    setPasswordBusy(false);
+  }
+
   return (
     <section className="account-card">
       <div className="profile-titlebar">
@@ -116,7 +148,8 @@ export function AccountForm({ profile }: { profile: Profile }) {
           </label>
           <small>JPG, PNG, or WebP. Maximum 3 MB.</small>
         </aside>
-        <form className="account-form form-grid" onSubmit={saveProfile}>
+        <div className="account-form-stack">
+          <form className="account-form form-grid" onSubmit={saveProfile}>
           <label>
             Display name
             <input
@@ -190,7 +223,26 @@ export function AccountForm({ profile }: { profile: Profile }) {
             </button>
             <a href={`/people/${profile.id}`}>view public profile</a>
           </div>
-        </form>
+          </form>
+          <form className="account-password-form form-grid" onSubmit={savePassword}>
+            <h2>Password</h2>
+            <label>
+              New password
+              <input name="password" type="password" required minLength={8} autoComplete="new-password" />
+            </label>
+            <label>
+              Confirm password
+              <input name="password_confirmation" type="password" required minLength={8} autoComplete="new-password" />
+            </label>
+            {passwordError ? <p className="form-error" role="alert">{passwordError}</p> : null}
+            {passwordMessage ? <p className="form-success" role="status">{passwordMessage}</p> : null}
+            <div className="form-actions">
+              <button className="button" type="submit" disabled={passwordBusy}>
+                {passwordBusy ? "Saving…" : "Save password"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
   );
