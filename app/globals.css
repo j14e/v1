@@ -4061,7 +4061,10 @@ textarea:focus-visible {
 
 .topbar,
 .sona-topbar,
-.sona-skeleton-topbar,
+.sona-skeleton-topbar {
+  background: #000000;
+}
+
 .sona-dialog-heading {
   background: #303030;
 }
