@@ -43,21 +43,14 @@ function formatJoinDate(value: string) {
 function PublicAdminHeader() {
   return (
     <>
-      <header className="topbar">
-        <Link className="wordmark" href="/">
-          v1
-        </Link>
-        <nav className="primary-nav" aria-label="Main navigation">
-          <Link href="/">directory</Link>
-        </nav>
+      <header className="sona-topbar">
+        <Link className="sona-wordmark" href="/">SONA</Link>
       </header>
-      <div className="utility-strip">
-        <strong>University of Auckland</strong>
-        <span>administration</span>
-        <Link className="back-link" href="/">
-          ← back to directory
-        </Link>
-      </div>
+      <nav className="sona-tabs sona-link-tabs" aria-label="Main navigation">
+        <Link href="/">Directory</Link>
+        <Link href="/?section=connect">Connect</Link>
+        <Link href="/account">Profile</Link>
+      </nav>
     </>
   );
 }
@@ -93,7 +86,7 @@ export default async function AdminPage() {
       <div className="site-shell">
         <PublicAdminHeader />
         <AccessPanel title="Admin sign in required">
-          <p>Sign in to your original v1 account, then return to /admin.</p>
+          <p>Sign in to your original SONA account, then return to /admin.</p>
           <Link className="button inline-button" href="/">
             Go to sign in
           </Link>
@@ -129,7 +122,7 @@ export default async function AdminPage() {
               <AdminAccessForm mode="setup" />
             </>
           ) : (
-            <p>Only the original v1 account can configure admin access.</p>
+            <p>Only the original SONA account can configure admin access.</p>
           )}
         </AccessPanel>
       </div>

@@ -60,7 +60,7 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
 
     if (signUpError) setError(signUpError.message);
     else {
-      setNotice("Check your University email for your SONA access link.");
+      setNotice("Check your student inbox for your SONA access link.");
       form.reset();
     }
     setBusy(false);
@@ -73,7 +73,7 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
   return (
     <form className={compact ? "sona-signup-form compact" : "sona-signup-form"} onSubmit={handleSubmit}>
       <label>
-        University email
+        Student email
         <input name="email" type="email" required placeholder="you@aucklanduni.ac.nz" pattern=".+@aucklanduni\.ac\.nz" autoComplete="email" />
       </label>
       <label>

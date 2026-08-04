@@ -61,7 +61,7 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
     });
 
     if (signInError) setError(signInError.message);
-    else setNotice("Check your University email for your SONA sign-in link.");
+    else setNotice("Check your student inbox for your SONA sign-in link.");
     setBusy(false);
   }
 
@@ -85,7 +85,7 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
             <form className="sona-signin-form" onSubmit={handleSignIn}>
               <p>We will email you a secure sign-in link.</p>
               <label>
-                University email
+                Student email
                 <input name="email" type="email" required placeholder="you@aucklanduni.ac.nz" autoComplete="email" />
               </label>
               {error ? <p className="form-error" role="alert">{error}</p> : null}

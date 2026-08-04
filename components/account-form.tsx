@@ -128,7 +128,7 @@ export function AccountForm({ profile }: { profile: Profile }) {
             />
           </label>
           <label>
-            University email
+            Student email
             <input value={profile.email} readOnly aria-readonly="true" />
           </label>
           <label>

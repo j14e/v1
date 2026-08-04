@@ -166,7 +166,7 @@ export function DirectoryClient({
           <section className="sona-section" aria-labelledby="directory-title">
             <div className="sona-section-heading">
               <div>
-                <span className="sona-eyebrow">University of Auckland</span>
+                <span className="sona-eyebrow">SONA member network</span>
                 <h1 id="directory-title">Student directory</h1>
               </div>
               <span>{profiles.length} members</span>

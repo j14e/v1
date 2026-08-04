@@ -12,35 +12,18 @@ export function SimpleHeader({ name }: { name: string }) {
 
   return (
     <>
-      <header className="topbar">
-        <Link className="wordmark" href="/">
-          SONA
-        </Link>
-        <nav className="primary-nav" aria-label="Main navigation">
-          <Link href="/">directory</Link>
-          <Link href="/?section=connect">connect</Link>
-          <Link href="/account">profile</Link>
-        </nav>
-        <div className="member-actions">
-          <span className="signed-in-as">signed in as {name}</span>
-          <Link className="mobile-nav-link" href="/messages">
-            messages
-          </Link>
-          <Link className="mobile-nav-link" href="/account">
-            profile
-          </Link>
-          <button className="nav-button" type="button" onClick={signOut}>
-            sign out
-          </button>
+      <header className="sona-topbar">
+        <Link className="sona-wordmark" href="/">SONA</Link>
+        <div className="sona-session">
+          <span>{name}</span>
+          <button type="button" onClick={signOut}>Sign out</button>
         </div>
       </header>
-      <div className="utility-strip">
-        <strong>University of Auckland</strong>
-        <span>student contact directory</span>
-        <Link className="back-link" href="/">
-          ← back to directory
-        </Link>
-      </div>
+      <nav className="sona-tabs sona-link-tabs" aria-label="Main navigation">
+        <Link href="/">Directory</Link>
+        <Link href="/?section=connect">Connect</Link>
+        <Link href="/account">Profile</Link>
+      </nav>
     </>
   );
 }

@@ -74,7 +74,7 @@ textarea:focus-visible {
   padding: 0 18px;
   background: var(--blue-950);
   color: white;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 30px;
   font-weight: bold;
   letter-spacing: -2px;
@@ -383,7 +383,7 @@ textarea:focus-visible {
 .section-heading h1 {
   margin: 0 0 4px;
   color: var(--blue-950);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 27px;
   font-weight: normal;
 }
@@ -428,7 +428,7 @@ textarea:focus-visible {
 .discovery-titlebar h2 {
   margin: 0;
   color: var(--blue-950);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 18px;
   font-weight: normal;
 }
@@ -719,7 +719,7 @@ textarea::placeholder {
   border: 1px solid #8290a2;
   background: #d7e5f4;
   color: var(--blue-900);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-weight: bold;
 }
 
@@ -795,7 +795,7 @@ textarea::placeholder {
   padding: 7px 10px;
   background: white;
   color: var(--muted);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 20px;
 }
 
@@ -806,7 +806,7 @@ textarea::placeholder {
 .banner-submit strong {
   display: block;
   color: var(--blue-950);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 16px;
   line-height: 1.25;
 }
@@ -849,7 +849,7 @@ textarea::placeholder {
 
 .empty-directory strong {
   color: var(--blue-950);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 20px;
 }
 
@@ -992,7 +992,7 @@ textarea::placeholder {
 .profile-titlebar h1 {
   margin: 0;
   color: var(--blue-950);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 24px;
   font-weight: normal;
 }
@@ -1177,7 +1177,7 @@ textarea::placeholder {
 .message-card h1 {
   margin-top: 0;
   color: var(--blue-950);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 22px;
   font-weight: normal;
 }
@@ -1328,7 +1328,7 @@ textarea::placeholder {
 
 .chat-person strong {
   color: var(--blue-950);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 19px;
 }
 
@@ -1524,7 +1524,7 @@ textarea::placeholder {
 .admin-titlebar h1 {
   margin: 0 0 3px;
   color: var(--blue-950);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 24px;
   font-weight: normal;
 }
@@ -1922,7 +1922,7 @@ textarea::placeholder {
   place-items: center;
   background: var(--blue-900);
   color: white;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--sona-font, Arial, sans-serif);
   font-size: 17px;
   font-weight: bold;
 }
@@ -3183,5 +3183,501 @@ textarea:focus-visible {
   .sona-chat-meta {
     grid-column: 2;
     justify-items: start;
+  }
+}
+
+/* Unified SONA typography and secondary pages */
+:root {
+  --sona-font: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--sona-font);
+}
+
+.wordmark,
+.section-heading h1,
+.discovery-titlebar h2,
+.avatar,
+.banner-empty-mark,
+.banner-submit strong,
+.empty-directory strong,
+.profile-titlebar h1,
+.message-card h1,
+.chat-person strong,
+.admin-titlebar h1,
+.connection-message-mark {
+  font-family: var(--sona-font);
+}
+
+.site-shell {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(184, 159, 232, 0.2), transparent 30%),
+    var(--shell);
+}
+
+.profile-page,
+.messages-page,
+.admin-page {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.profile-card,
+.account-card,
+.messages-card,
+.chat-card,
+.admin-directory,
+.admin-gate,
+.message-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 40px rgba(78, 54, 121, 0.09);
+}
+
+.profile-titlebar,
+.chat-titlebar,
+.admin-titlebar {
+  border-color: var(--line);
+  background: #eee6fa;
+}
+
+.profile-photo,
+.avatar-editor {
+  border-color: var(--line);
+  background: #f6f1fc;
+}
+
+.profile-details dl,
+.profile-details dl > div,
+.profile-details dt,
+.conversation-row,
+.message-row,
+.message-composer,
+.admin-table th,
+.admin-table td {
+  border-color: #e8e0f3;
+}
+
+.course-list span,
+.friend-status,
+.secondary-button,
+.record-button {
+  border-radius: 999px;
+}
+
+.sona-link-tabs a {
+  position: relative;
+  min-height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #6f6680;
+  font-size: 13px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.sona-link-tabs a:hover {
+  background: #eee5fb;
+  color: #5c419b;
+}
+
+/* SONA loading system */
+.sona-skeleton-shell {
+  min-height: 100vh;
+}
+
+.sona-bone {
+  display: block;
+  overflow: hidden;
+  border-radius: 999px;
+  background: linear-gradient(
+    100deg,
+    #e8def5 20%,
+    #f7f2fd 38%,
+    #e8def5 56%
+  );
+  background-size: 220% 100%;
+  animation: sona-skeleton-shimmer 1.35s ease-in-out infinite;
+}
+
+.sona-skeleton-topbar {
+  background: #a68adb;
+}
+
+.sona-skeleton-session {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sona-skeleton-session .sona-bone {
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.46) 38%,
+    rgba(255, 255, 255, 0.2) 56%
+  );
+  background-size: 220% 100%;
+}
+
+.sona-bone-name {
+  width: 116px;
+  height: 10px;
+}
+
+.sona-bone-pill {
+  width: 76px;
+  height: 34px;
+}
+
+.sona-bone-pill.wide {
+  width: 140px;
+  height: 40px;
+}
+
+.sona-skeleton-tabs {
+  align-items: center;
+}
+
+.sona-tab-bone {
+  width: 100%;
+  height: 32px;
+}
+
+.sona-tab-bone.active {
+  background: linear-gradient(100deg, #ddcff2 20%, #eee5fb 38%, #ddcff2 56%);
+  background-size: 220% 100%;
+}
+
+.sona-skeleton-title {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.sona-skeleton-title > div,
+.sona-skeleton-profile-name {
+  display: grid;
+  gap: 9px;
+}
+
+.sona-bone-eyebrow {
+  width: 118px;
+  height: 9px;
+}
+
+.sona-bone-title {
+  width: 230px;
+  max-width: 68vw;
+  height: 32px;
+  border-radius: 10px;
+}
+
+.sona-bone-count {
+  width: 72px;
+  height: 10px;
+}
+
+.sona-skeleton-directory {
+  box-shadow: 0 12px 34px rgba(78, 54, 121, 0.06);
+}
+
+.sona-skeleton-search {
+  display: grid;
+  grid-template-columns: auto minmax(220px, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  background: #f2ecfb;
+}
+
+.sona-bone-label {
+  width: 106px;
+  height: 9px;
+}
+
+.sona-bone-input {
+  width: 100%;
+  height: 42px;
+  border-radius: 11px;
+}
+
+.sona-bone-input.tall {
+  height: 84px;
+}
+
+.sona-skeleton-member-list {
+  min-height: 420px;
+}
+
+.sona-skeleton-member {
+  cursor: default;
+}
+
+.sona-bone-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+}
+
+.sona-bone-avatar.small {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.sona-skeleton-member-copy,
+.sona-skeleton-conversation > span,
+.sona-skeleton-bubble-row > span {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.sona-bone-person {
+  width: min(170px, 74%);
+  height: 12px;
+}
+
+.sona-bone-study {
+  width: min(280px, 88%);
+  height: 9px;
+}
+
+.sona-bone-study.short {
+  width: 48%;
+}
+
+.sona-bone-meta {
+  width: min(210px, 64%);
+  height: 8px;
+}
+
+.sona-bone-chevron {
+  width: 10px;
+  height: 24px;
+  border-radius: 6px;
+}
+
+.sona-skeleton-showcase {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 12px 34px rgba(78, 54, 121, 0.06);
+}
+
+.sona-bone-banner {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 0;
+}
+
+.sona-skeleton-showcase > div {
+  display: grid;
+  gap: 10px;
+  padding: 15px;
+}
+
+.sona-skeleton-profile .sona-profile-cover {
+  background: linear-gradient(120deg, #d8c9ef, #b79ce3);
+}
+
+.sona-bone-profile-avatar {
+  width: 124px;
+  height: 124px;
+  margin-top: -62px;
+  border: 5px solid white;
+  border-radius: 24px;
+}
+
+.sona-skeleton-profile-name {
+  margin: 14px 0 22px;
+}
+
+.sona-skeleton-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--line);
+}
+
+.sona-skeleton-details > div {
+  display: grid;
+  gap: 9px;
+  background: white;
+  padding: 15px;
+}
+
+.sona-skeleton-narrow {
+  width: min(980px, 100%);
+}
+
+.sona-skeleton-page-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 40px rgba(78, 54, 121, 0.08);
+}
+
+.sona-skeleton-card-heading {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--line);
+  background: #eee6fa;
+}
+
+.sona-skeleton-card-heading > div {
+  display: grid;
+  gap: 8px;
+}
+
+.sona-skeleton-conversation {
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 110px;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee8f5;
+}
+
+.sona-skeleton-bubble-row {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 460px);
+  align-items: start;
+  gap: 11px;
+  padding: 14px 18px;
+}
+
+.sona-skeleton-bubble-row.mine {
+  grid-template-columns: minmax(0, 460px) 40px;
+  justify-content: end;
+}
+
+.sona-skeleton-bubble-row.mine .sona-bone-avatar {
+  grid-column: 2;
+}
+
+.sona-skeleton-bubble-row.mine > span {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.sona-skeleton-composer {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid var(--line);
+  background: #f7f3fc;
+}
+
+.sona-skeleton-admin-grid > div {
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: 40px minmax(130px, 1fr) minmax(180px, 1.3fr) minmax(100px, 0.7fr) 76px;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee8f5;
+}
+
+@keyframes sona-skeleton-shimmer {
+  from { background-position: 110% 0; }
+  to { background-position: -110% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sona-bone {
+    animation: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .profile-page,
+  .messages-page,
+  .admin-page {
+    padding: 14px 10px 28px;
+  }
+
+  .profile-card,
+  .account-card,
+  .messages-card,
+  .chat-card,
+  .admin-directory,
+  .admin-gate,
+  .message-card {
+    border-radius: 16px;
+  }
+
+  .sona-skeleton-session .sona-bone-name {
+    display: none;
+  }
+
+  .sona-skeleton-search {
+    grid-template-columns: 1fr auto;
+    padding: 10px;
+  }
+
+  .sona-skeleton-search .sona-bone-label {
+    grid-column: 1 / -1;
+  }
+
+  .sona-skeleton-member-list {
+    min-height: 62vh;
+  }
+
+  .sona-skeleton-showcase {
+    display: none;
+  }
+
+  .sona-bone-profile-avatar {
+    width: 104px;
+    height: 104px;
+    margin-top: -52px;
+    border-radius: 20px;
+  }
+
+  .sona-skeleton-details {
+    grid-template-columns: 1fr;
+  }
+
+  .sona-skeleton-conversation {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .sona-skeleton-conversation > .sona-bone-meta {
+    grid-column: 2;
+  }
+
+  .sona-skeleton-admin-grid > div {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .sona-skeleton-admin-grid > div > .sona-bone-meta,
+  .sona-skeleton-admin-grid > div > .sona-bone-pill {
+    grid-column: 2;
   }
 }

@@ -1,56 +1,33 @@
 import type { ReactNode } from "react";
 
-const directoryRows = ["one", "two", "three", "four", "five"];
-const detailRows = [
-  "name",
-  "availability",
-  "year",
-  "programme",
-  "major",
-  "department",
-  "courses",
-];
-const messageRows = ["first", "second", "third", "fourth"];
-const adminRows = ["member-one", "member-two", "member-three"];
+const rows = ["one", "two", "three", "four", "five", "six"];
 
-function SkeletonLine({
-  className = "",
-}: {
-  className?: string;
-}) {
-  return <span className={`skeleton-block skeleton-line ${className}`} />;
+function Bone({ className = "" }: { className?: string }) {
+  return <span className={`sona-bone ${className}`} />;
 }
 
 function SkeletonHeader() {
   return (
     <>
-      <header className="topbar skeleton-topbar">
-        <span className="wordmark">v1</span>
-        <nav className="primary-nav" aria-hidden="true">
-          <span className="skeleton-nav-item" />
-          <span className="skeleton-nav-item" />
-          <span className="skeleton-nav-item" />
-        </nav>
-        <div className="member-actions">
-          <SkeletonLine className="skeleton-signed-in" />
-          <SkeletonLine className="skeleton-nav-action" />
+      <header className="sona-topbar sona-skeleton-topbar">
+        <span className="sona-wordmark">SONA</span>
+        <div className="sona-skeleton-session">
+          <Bone className="sona-bone-name" />
+          <Bone className="sona-bone-pill" />
         </div>
       </header>
-      <div className="utility-strip skeleton-utility" aria-hidden="true">
-        <SkeletonLine className="skeleton-utility-title" />
-        <SkeletonLine className="skeleton-utility-copy" />
-      </div>
+      <nav className="sona-tabs sona-skeleton-tabs" aria-hidden="true">
+        <Bone className="sona-tab-bone active" />
+        <Bone className="sona-tab-bone" />
+        <Bone className="sona-tab-bone" />
+      </nav>
     </>
   );
 }
 
 function SkeletonShell({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="site-shell skeleton-shell"
-      role="status"
-      aria-label="Loading page"
-    >
+    <div className="sona-app-shell sona-skeleton-shell" role="status" aria-label="Loading page">
       <span className="visually-hidden">Loading page</span>
       <div aria-hidden="true">
         <SkeletonHeader />
@@ -60,104 +37,54 @@ function SkeletonShell({ children }: { children: ReactNode }) {
   );
 }
 
+function SkeletonTitle() {
+  return (
+    <div className="sona-skeleton-title">
+      <div>
+        <Bone className="sona-bone-eyebrow" />
+        <Bone className="sona-bone-title" />
+      </div>
+      <Bone className="sona-bone-count" />
+    </div>
+  );
+}
+
 export function DirectoryLoadingSkeleton() {
   return (
     <SkeletonShell>
-      <div className="page-grid directory-layout">
-        <aside className="sidebar skeleton-sidebar">
-          {["departments", "inbox", "about"].map((panel) => (
-            <section className="side-panel skeleton-side-panel" key={panel}>
-              <div className="panel-heading">
-                <SkeletonLine className="skeleton-panel-title" />
-              </div>
-              <div className="skeleton-panel-body">
-                <SkeletonLine />
-                <SkeletonLine className="short" />
-                <SkeletonLine className="medium" />
-              </div>
-            </section>
-          ))}
-        </aside>
-        <main className="directory-main">
-          <div className="section-heading skeleton-section-heading">
-            <div>
-              <SkeletonLine className="skeleton-heading-line" />
-              <SkeletonLine className="skeleton-subheading-line" />
+      <main className="sona-main">
+        <SkeletonTitle />
+        <div className="sona-directory-layout">
+          <section className="sona-directory-column sona-skeleton-directory">
+            <div className="sona-skeleton-search">
+              <Bone className="sona-bone-label" />
+              <Bone className="sona-bone-input" />
+              <Bone className="sona-bone-count" />
             </div>
-          </div>
-          <div className="homepage-discovery-grid">
-            <section className="new-members-panel">
-              <div className="discovery-titlebar">
-                <div>
-                  <SkeletonLine className="medium" />
-                  <SkeletonLine className="short" />
-                </div>
-              </div>
-              <div className="new-members-scroll">
-                {["new-one", "new-two", "new-three"].map((member) => (
-                  <article className="new-member-card" key={member}>
-                    <div className="new-member-profile">
-                      <span className="skeleton-block skeleton-new-member-photo" />
-                      <span className="skeleton-person-lines">
-                        <SkeletonLine className="medium" />
-                        <SkeletonLine className="short" />
-                        <SkeletonLine className="medium" />
-                      </span>
-                    </div>
-                    <span className="skeleton-block skeleton-new-member-button" />
-                  </article>
-                ))}
-              </div>
-            </section>
-          </div>
-          <div className="directory-tools">
-            <SkeletonLine className="skeleton-label-line" />
-            <span className="skeleton-block skeleton-input-block" />
-          </div>
-          <section className="directory-panel">
-            <div className="directory-header">
-              <span>person</span>
-              <span>year</span>
-              <span>programme / major</span>
-              <span>faculty or department</span>
-              <span />
-            </div>
-            <div className="directory-list">
-              {directoryRows.map((row) => (
-                <div className="directory-row skeleton-directory-row" key={row}>
-                  <span className="person-cell">
-                    <span className="skeleton-block skeleton-avatar" />
-                    <span className="skeleton-person-lines">
-                      <SkeletonLine className="medium" />
-                      <SkeletonLine className="short" />
-                    </span>
+            <div className="sona-skeleton-member-list">
+              {rows.map((row) => (
+                <div className="sona-directory-card sona-skeleton-member" key={row}>
+                  <Bone className="sona-bone-avatar" />
+                  <span className="sona-skeleton-member-copy">
+                    <Bone className="sona-bone-person" />
+                    <Bone className="sona-bone-study" />
+                    <Bone className="sona-bone-meta" />
                   </span>
-                  <SkeletonLine className="short" />
-                  <span>
-                    <SkeletonLine className="medium" />
-                    <SkeletonLine className="short" />
-                  </span>
-                  <SkeletonLine className="medium" />
-                  <SkeletonLine className="short" />
+                  <Bone className="sona-bone-chevron" />
                 </div>
               ))}
             </div>
           </section>
-        </main>
-        <aside className="banner-rail">
-          <section className="banner-card">
-            <div className="panel-heading">
-              <SkeletonLine className="skeleton-panel-title" />
+          <aside className="sona-skeleton-showcase">
+            <Bone className="sona-bone-banner" />
+            <div>
+              <Bone className="sona-bone-person" />
+              <Bone className="sona-bone-study" />
+              <Bone className="sona-bone-pill wide" />
             </div>
-            <span className="skeleton-block banner-display" />
-            <div className="banner-submit">
-              <SkeletonLine className="long" />
-              <SkeletonLine className="medium" />
-              <span className="skeleton-block skeleton-button-block" />
-            </div>
-          </section>
-        </aside>
-      </div>
+          </aside>
+        </div>
+      </main>
     </SkeletonShell>
   );
 }
@@ -165,35 +92,25 @@ export function DirectoryLoadingSkeleton() {
 export function ProfileLoadingSkeleton() {
   return (
     <SkeletonShell>
-      <main className="profile-page">
-        <section className="profile-card">
-          <div className="profile-titlebar">
-            <SkeletonLine className="skeleton-heading-line" />
-            <SkeletonLine className="skeleton-status-line" />
-          </div>
-          <div className="profile-body">
-            <aside className="profile-photo">
-              <span className="skeleton-block skeleton-profile-photo" />
-              <SkeletonLine className="medium" />
-            </aside>
-            <div className="profile-details skeleton-profile-details">
-              <dl>
-                {detailRows.map((row) => (
-                  <div key={row}>
-                    <dt>
-                      <SkeletonLine className="medium" />
-                    </dt>
-                    <dd>
-                      <SkeletonLine className={row === "courses" ? "long" : "medium"} />
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-              <div className="skeleton-profile-actions">
-                <span className="skeleton-block skeleton-button-block" />
-                <span className="skeleton-block skeleton-button-block" />
-              </div>
+      <main className="sona-main">
+        <section className="sona-profile-card sona-skeleton-profile">
+          <div className="sona-profile-cover" />
+          <div className="sona-profile-content">
+            <Bone className="sona-bone-profile-avatar" />
+            <div className="sona-skeleton-profile-name">
+              <Bone className="sona-bone-eyebrow" />
+              <Bone className="sona-bone-title" />
+              <Bone className="sona-bone-study" />
             </div>
+            <div className="sona-skeleton-details">
+              {["year", "studies", "major", "department", "courses", "email"].map((item) => (
+                <div key={item}>
+                  <Bone className="sona-bone-label" />
+                  <Bone className="sona-bone-study" />
+                </div>
+              ))}
+            </div>
+            <Bone className="sona-bone-pill wide" />
           </div>
         </section>
       </main>
@@ -204,50 +121,30 @@ export function ProfileLoadingSkeleton() {
 export function MessagesLoadingSkeleton({ chat = false }: { chat?: boolean }) {
   return (
     <SkeletonShell>
-      <main className="messages-page">
-        <section className={chat ? "chat-card" : "messages-card"}>
-          <div className={chat ? "chat-titlebar" : "profile-titlebar"}>
-            <SkeletonLine className="skeleton-heading-line" />
-            <SkeletonLine className="skeleton-status-line" />
+      <main className="sona-main sona-skeleton-narrow">
+        <section className="sona-skeleton-page-card">
+          <div className="sona-skeleton-card-heading">
+            <Bone className="sona-bone-title" />
+            <Bone className="sona-bone-count" />
+          </div>
+          <div className={chat ? "sona-skeleton-chat" : "sona-skeleton-conversations"}>
+            {rows.slice(0, chat ? 4 : 5).map((row, index) => (
+              <div className={chat ? `sona-skeleton-bubble-row ${index % 2 ? "mine" : ""}` : "sona-skeleton-conversation"} key={row}>
+                <Bone className="sona-bone-avatar small" />
+                <span>
+                  <Bone className="sona-bone-person" />
+                  <Bone className={index % 2 ? "sona-bone-study short" : "sona-bone-study"} />
+                </span>
+                {!chat ? <Bone className="sona-bone-meta" /> : null}
+              </div>
+            ))}
           </div>
           {chat ? (
-            <>
-              <div className="message-history skeleton-message-history">
-                {messageRows.map((row, index) => (
-                  <div
-                    className={index % 2 ? "message-row mine" : "message-row"}
-                    key={row}
-                  >
-                    <span className="skeleton-block skeleton-chat-avatar" />
-                    <span className="message-bubble skeleton-message-bubble">
-                      <SkeletonLine className="short" />
-                      <SkeletonLine className={index % 2 ? "medium" : "long"} />
-                      <SkeletonLine className="medium" />
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="message-composer skeleton-composer">
-                <SkeletonLine className="skeleton-label-line" />
-                <span className="skeleton-block skeleton-textarea-block" />
-                <span className="skeleton-block skeleton-button-block" />
-              </div>
-            </>
-          ) : (
-            <div className="conversation-list">
-              {messageRows.map((row) => (
-                <div className="conversation-row" key={row}>
-                  <span className="skeleton-block skeleton-conversation-avatar" />
-                  <span className="conversation-person">
-                    <SkeletonLine className="medium" />
-                    <SkeletonLine className="short" />
-                  </span>
-                  <SkeletonLine className="long" />
-                  <SkeletonLine className="short" />
-                </div>
-              ))}
+            <div className="sona-skeleton-composer">
+              <Bone className="sona-bone-input tall" />
+              <Bone className="sona-bone-pill wide" />
             </div>
-          )}
+          ) : null}
         </section>
       </main>
     </SkeletonShell>
@@ -257,46 +154,25 @@ export function MessagesLoadingSkeleton({ chat = false }: { chat?: boolean }) {
 export function AdminLoadingSkeleton() {
   return (
     <SkeletonShell>
-      <main className="admin-page">
-        <section className="admin-directory">
-          <div className="admin-titlebar">
+      <main className="sona-main">
+        <section className="sona-skeleton-page-card">
+          <div className="sona-skeleton-card-heading">
             <div>
-              <SkeletonLine className="skeleton-heading-line" />
-              <SkeletonLine className="short" />
+              <Bone className="sona-bone-title" />
+              <Bone className="sona-bone-study" />
             </div>
-            <span className="skeleton-block skeleton-button-block" />
+            <Bone className="sona-bone-pill" />
           </div>
-          <div className="admin-table-wrap">
-            <table className="admin-table skeleton-admin-table">
-              <thead>
-                <tr>
-                  {["member", "email", "joined", "studies", "department", "courses", "status", "controls"].map(
-                    (heading) => (
-                      <th key={heading}>{heading}</th>
-                    ),
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {adminRows.map((row) => (
-                  <tr key={row}>
-                    <td>
-                      <span className="admin-person">
-                        <span className="skeleton-block skeleton-chat-avatar" />
-                        <SkeletonLine className="medium" />
-                      </span>
-                    </td>
-                    <td><SkeletonLine className="long" /></td>
-                    <td><SkeletonLine className="medium" /></td>
-                    <td><SkeletonLine className="medium" /></td>
-                    <td><SkeletonLine className="medium" /></td>
-                    <td><SkeletonLine className="short" /></td>
-                    <td><SkeletonLine className="short" /></td>
-                    <td><span className="skeleton-block skeleton-button-block" /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="sona-skeleton-admin-grid">
+            {rows.map((row) => (
+              <div key={row}>
+                <Bone className="sona-bone-avatar small" />
+                <Bone className="sona-bone-person" />
+                <Bone className="sona-bone-study" />
+                <Bone className="sona-bone-meta" />
+                <Bone className="sona-bone-pill" />
+              </div>
+            ))}
           </div>
         </section>
       </main>

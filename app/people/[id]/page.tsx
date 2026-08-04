@@ -59,7 +59,7 @@ export default async function PersonPage({
         <section className="profile-card">
           <div className="profile-titlebar">
             <h1>{person.display_name}</h1>
-            <span>verified University member</span>
+            <span>verified SONA member</span>
           </div>
           <div className="profile-body">
             <aside className="profile-photo">
@@ -115,7 +115,7 @@ export default async function PersonPage({
                   </dd>
                 </div>
                 <div>
-                  <dt>University email</dt>
+                  <dt>Student email</dt>
                   <dd>
                     <a href={`mailto:${person.email}`}>{person.email}</a>
                   </dd>
