@@ -6,10 +6,8 @@ export default function SignupPage() {
     <main className="sona-signup-page">
       <section className="sona-signup-card">
         <Link className="sona-signup-wordmark" href="/">SONA</Link>
-        <h1>Join the directory</h1>
-        <p>Use your student email. It takes less than a minute.</p>
+        <h1>JOIN NOW</h1>
         <MinimalSignupForm />
-        <Link className="sona-back-link" href="/">Back to SONA</Link>
       </section>
     </main>
   );
