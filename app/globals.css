@@ -4122,6 +4122,10 @@ textarea:focus-visible {
   color: #444444;
 }
 
+.sona-directory-card {
+  border-bottom-color: #eeeeee;
+}
+
 .sona-tabs button.active {
   background: #dddddd;
   color: #333333;
