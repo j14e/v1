@@ -3071,6 +3071,8 @@ textarea:focus-visible {
     min-height: 0;
     flex: 1;
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .sona-directory-section {
