@@ -86,7 +86,7 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
         <div className="sona-dialog-heading">
           <div>
             <SonaLogo variant="dialog" />
-            <strong id="auth-title">{mode === "signup" ? "Join the directory" : "Sign in"}</strong>
+            <strong id="auth-title">{mode === "signup" ? "SONA" : "Sign in"}</strong>
           </div>
           <button className="sona-icon-button" type="button" onClick={onClose} aria-label="Close">×</button>
         </div>

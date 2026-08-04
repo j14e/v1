@@ -4451,6 +4451,35 @@ textarea:focus-visible {
   cursor: pointer;
 }
 
+.sona-signup-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: -28px -28px 22px;
+  border-radius: 21px 21px 0 0;
+  background: #b4fa02;
+  padding: 18px 24px;
+}
+
+.sona-signup-heading h1 {
+  margin: 0;
+  color: #000000;
+}
+
+.sona-signup-form .sona-primary-button,
+.sona-signup-form .sona-primary-button:hover {
+  background: #b4fa02;
+  color: #000000;
+}
+
+@media (max-width: 800px) {
+  .sona-signup-heading {
+    margin: -22px -17px 20px;
+    border-radius: 17px 17px 0 0;
+    padding: 15px 17px;
+  }
+}
+
 .sona-person-copy span {
   color: #666666;
 }

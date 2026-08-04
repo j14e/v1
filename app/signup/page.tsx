@@ -5,8 +5,10 @@ export default function SignupPage() {
   return (
     <main className="sona-signup-page">
       <section className="sona-signup-card">
-        <SonaLogo variant="page" />
-        <h1>JOIN NOW</h1>
+        <header className="sona-signup-heading">
+          <SonaLogo variant="page" />
+          <h1>JOIN NOW</h1>
+        </header>
         <MinimalSignupForm />
       </section>
     </main>

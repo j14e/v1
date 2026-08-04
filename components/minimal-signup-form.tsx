@@ -13,6 +13,7 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
   const [notice, setNotice] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     if (!avatarFile) {
@@ -41,6 +42,23 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
 
     setError("");
     setAvatarFile(file);
+  }
+
+  function updateCompletion(event: FormEvent<HTMLFormElement>) {
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const email = String(formData.get("email") ?? "").trim().toLowerCase();
+    const displayName = String(formData.get("display_name") ?? "").trim();
+    const yearLevel = String(formData.get("year_level") ?? "");
+    const parsed = parseCourseCodes(String(formData.get("courses") ?? ""));
+
+    setIsComplete(
+      form.checkValidity()
+      && email.endsWith("@aucklanduni.ac.nz")
+      && displayName.length >= 2
+      && Boolean(yearLevel)
+      && !parsed.error,
+    );
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -76,18 +94,14 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
       setBusy(false);
       return;
     }
-    if (!avatarFile) {
-      setError("Take a selfie or choose a profile photo.");
-      setBusy(false);
-      return;
-    }
-
-    try {
-      await savePendingSignupAvatar(email, avatarFile);
-    } catch {
-      setError("Your photo could not be saved. Choose it again and retry.");
-      setBusy(false);
-      return;
+    if (avatarFile) {
+      try {
+        await savePendingSignupAvatar(email, avatarFile);
+      } catch {
+        setError("Your photo could not be saved. Choose it again and retry.");
+        setBusy(false);
+        return;
+      }
     }
 
     const supabase = createClient();
@@ -106,9 +120,12 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
 
     if (signUpError) setError(signUpError.message);
     else {
-      setNotice("Check your student inbox for your SONA access link. Your photo will be added when you sign in.");
+      setNotice(avatarFile
+        ? "Check your student inbox for your SONA access link. Your photo will be added when you sign in."
+        : "Check your student inbox for your SONA access link.");
       form.reset();
       setAvatarFile(null);
+      setIsComplete(false);
     }
     setBusy(false);
   }
@@ -118,7 +135,12 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <form className={compact ? "sona-signup-form compact" : "sona-signup-form"} onSubmit={handleSubmit}>
+    <form
+      className={compact ? "sona-signup-form compact" : "sona-signup-form"}
+      onSubmit={handleSubmit}
+      onInput={updateCompletion}
+      onChange={updateCompletion}
+    >
       <label className="sona-selfie-field">
         <strong>Take a selfie!</strong>
         <span className={avatarPreview ? "sona-selfie-preview selected" : "sona-selfie-preview"}>
@@ -133,11 +155,10 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
           type="file"
           accept="image/jpeg,image/png,image/webp"
           capture="user"
-          required
           disabled={busy}
           onChange={chooseAvatar}
         />
-        <small>Use the front camera or choose a photo. Maximum 3 MB.</small>
+        <small>Optional — use the front camera or choose a photo. Maximum 3 MB.</small>
       </label>
       <label>
         Student email
@@ -161,7 +182,7 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
       </label>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       <button className="button sona-primary-button" type="submit" disabled={busy}>
-        {busy ? "Sending access link…" : "Join SONA"}
+        {busy ? "Sending access link…" : isComplete ? "DONE!" : "doo-doo doo..."}
       </button>
     </form>
   );
