@@ -4412,6 +4412,45 @@ textarea:focus-visible {
   color: #333333;
 }
 
+.sona-selfie-field {
+  align-items: center;
+  text-align: center;
+}
+
+.sona-selfie-field > strong {
+  color: #000000;
+  font-size: 17px;
+}
+
+.sona-selfie-preview {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #e8e8e8;
+  color: #555555;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.sona-selfie-preview.selected {
+  background: #b4fa02;
+}
+
+.sona-selfie-preview img {
+  object-fit: cover;
+}
+
+.sona-selfie-field > input[type="file"] {
+  width: min(260px, 100%);
+  min-height: 38px;
+  padding: 6px;
+  cursor: pointer;
+}
+
 .sona-person-copy span {
   color: #666666;
 }

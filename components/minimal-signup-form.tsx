@@ -1,14 +1,47 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import Image from "next/image";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { parseCourseCodes } from "@/lib/course-codes";
 import { yearLevels } from "@/lib/catalog";
+import { savePendingSignupAvatar } from "@/lib/pending-signup-avatar";
 import { createClient } from "@/lib/supabase/client";
 
 export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+
+  useEffect(() => {
+    if (!avatarFile) {
+      setAvatarPreview("");
+      return;
+    }
+
+    const preview = URL.createObjectURL(avatarFile);
+    setAvatarPreview(preview);
+    return () => URL.revokeObjectURL(preview);
+  }, [avatarFile]);
+
+  function chooseAvatar(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setError("Use a JPG, PNG, or WebP profile photo.");
+      event.target.value = "";
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      setError("Profile photos must be under 3 MB.");
+      event.target.value = "";
+      return;
+    }
+
+    setError("");
+    setAvatarFile(file);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -43,6 +76,19 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
       setBusy(false);
       return;
     }
+    if (!avatarFile) {
+      setError("Take a selfie or choose a profile photo.");
+      setBusy(false);
+      return;
+    }
+
+    try {
+      await savePendingSignupAvatar(email, avatarFile);
+    } catch {
+      setError("Your photo could not be saved. Choose it again and retry.");
+      setBusy(false);
+      return;
+    }
 
     const supabase = createClient();
     const { error: signUpError } = await supabase.auth.signInWithOtp({
@@ -60,8 +106,9 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
 
     if (signUpError) setError(signUpError.message);
     else {
-      setNotice("Check your student inbox for your SONA access link.");
+      setNotice("Check your student inbox for your SONA access link. Your photo will be added when you sign in.");
       form.reset();
+      setAvatarFile(null);
     }
     setBusy(false);
   }
@@ -72,6 +119,26 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
 
   return (
     <form className={compact ? "sona-signup-form compact" : "sona-signup-form"} onSubmit={handleSubmit}>
+      <label className="sona-selfie-field">
+        <strong>Take a selfie!</strong>
+        <span className={avatarPreview ? "sona-selfie-preview selected" : "sona-selfie-preview"}>
+          {avatarPreview ? (
+            <Image src={avatarPreview} alt="Selected profile photo" fill sizes="112px" unoptimized />
+          ) : (
+            <span aria-hidden="true">Add photo</span>
+          )}
+        </span>
+        <input
+          name="avatar"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          capture="user"
+          required
+          disabled={busy}
+          onChange={chooseAvatar}
+        />
+        <small>Use the front camera or choose a photo. Maximum 3 MB.</small>
+      </label>
       <label>
         Student email
         <input name="email" type="email" required placeholder="you@aucklanduni.ac.nz" pattern=".+@aucklanduni\.ac\.nz" autoComplete="email" />

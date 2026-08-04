@@ -1,12 +1,34 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/avatar";
 import { parseCourseCodes } from "@/lib/course-codes";
 import { departments, majors, programmeGroups, yearLevels } from "@/lib/catalog";
+import { clearPendingSignupAvatar, getPendingSignupAvatar } from "@/lib/pending-signup-avatar";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/types/profile";
+
+async function storeAvatar(profileId: string, file: File) {
+  const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `${profileId}/profile.${extension}`;
+  const supabase = createClient();
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(path, file, { upsert: true, cacheControl: "3600" });
+  if (uploadError) throw uploadError;
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("avatars").getPublicUrl(path);
+  const versionedUrl = `${publicUrl}?v=${Date.now()}`;
+  const { error: updateError } = await supabase
+    .from("profiles")
+    .update({ avatar_url: versionedUrl })
+    .eq("id", profileId);
+  if (updateError) throw updateError;
+  return versionedUrl;
+}
 
 export function AccountForm({ profile }: { profile: Profile }) {
   const router = useRouter();
@@ -17,6 +39,38 @@ export function AccountForm({ profile }: { profile: Profile }) {
   const [passwordBusy, setPasswordBusy] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const pendingAvatarStarted = useRef(false);
+
+  useEffect(() => {
+    if (pendingAvatarStarted.current) return;
+    pendingAvatarStarted.current = true;
+    let active = true;
+
+    void (async () => {
+      try {
+        const file = await getPendingSignupAvatar(profile.email);
+        if (!file || !active) return;
+        setBusy(true);
+        setError("");
+        const versionedUrl = await storeAvatar(profile.id, file);
+        if (!active) return;
+        await clearPendingSignupAvatar(profile.email);
+        setAvatarUrl(versionedUrl);
+        setMessage("Selfie added to your profile.");
+        router.refresh();
+      } catch (uploadError) {
+        if (active) {
+          setError(uploadError instanceof Error ? uploadError.message : "Profile photo upload failed.");
+        }
+      } finally {
+        if (active) setBusy(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [profile.email, profile.id, router]);
 
   async function uploadAvatar(file: File) {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
@@ -30,33 +84,13 @@ export function AccountForm({ profile }: { profile: Profile }) {
 
     setBusy(true);
     setError("");
-    const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const path = `${profile.id}/profile.${extension}`;
-    const supabase = createClient();
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(path, file, { upsert: true, cacheControl: "3600" });
-
-    if (uploadError) {
-      setError(uploadError.message);
-      setBusy(false);
-      return;
-    }
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("avatars").getPublicUrl(path);
-    const versionedUrl = `${publicUrl}?v=${Date.now()}`;
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ avatar_url: versionedUrl })
-      .eq("id", profile.id);
-
-    if (updateError) setError(updateError.message);
-    else {
+    try {
+      const versionedUrl = await storeAvatar(profile.id, file);
       setAvatarUrl(versionedUrl);
       setMessage("Profile picture updated.");
       router.refresh();
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Profile photo upload failed.");
     }
     setBusy(false);
   }
