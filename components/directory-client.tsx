@@ -204,9 +204,9 @@ export function DirectoryClient({
             <>
               <button type="button" onClick={() => showAuth("signin")}>Sign in</button>
               <button className="sona-join-button" type="button" onClick={() => showAuth("signup")}>Join</button>
-              <button type="button" onClick={() => { setShareNotice(""); setShareOpen(true); }}>Share</button>
             </>
           )}
+          <button type="button" onClick={() => { setShareNotice(""); setShareOpen(true); }}>Share</button>
         </div>
       </header>
 
