@@ -95,7 +95,7 @@ export default async function ConversationPage({
   }
 
   return (
-    <div className="site-shell">
+    <div className="site-shell messages-shell">
       <SimpleHeader name={currentUser.display_name} />
       <main className="messages-page">
         <ChatThread

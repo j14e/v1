@@ -101,7 +101,7 @@ export default async function MessagesPage() {
   }
 
   return (
-    <div className="site-shell">
+    <div className="site-shell messages-shell">
       <SimpleHeader name={ownProfile?.display_name ?? user.email ?? "member"} />
       <main className="messages-page">
         <section className="messages-card">

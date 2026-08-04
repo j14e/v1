@@ -8,6 +8,7 @@ import {
   useState,
   type ChangeEvent,
   type FormEvent,
+  type KeyboardEvent,
 } from "react";
 import { Avatar } from "@/components/avatar";
 import { AvailabilityBadge } from "@/components/availability-badge";
@@ -173,6 +174,17 @@ export function ChatThread({
     } finally {
       setBusy(false);
     }
+  }
+
+  function sendTextOnEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (
+      event.key !== "Enter" ||
+      event.shiftKey ||
+      event.nativeEvent.isComposing
+    ) return;
+
+    event.preventDefault();
+    event.currentTarget.form?.requestSubmit();
   }
 
   async function sendMedia(
@@ -438,9 +450,10 @@ export function ChatThread({
           id="message-text"
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={sendTextOnEnter}
           placeholder={`Write to ${recipient.displayName}`}
           maxLength={4000}
-          rows={3}
+          rows={2}
           disabled={busy || recording}
         />
         <div className="composer-actions">

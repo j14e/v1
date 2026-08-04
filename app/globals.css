@@ -4273,6 +4273,133 @@ textarea:focus-visible {
   font-size: 12px;
 }
 
+/* Fixed, centered messaging workspace */
+.messages-shell {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.messages-shell .messages-page {
+  width: min(780px, 100%);
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  margin: 0 auto;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.messages-shell .messages-card,
+.messages-shell .chat-card {
+  min-height: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.messages-shell .conversation-list,
+.messages-shell .message-history {
+  min-height: 0;
+  max-height: none;
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.messages-shell .empty-messages,
+.messages-shell .chat-empty {
+  min-height: 0;
+  flex: 1;
+}
+
+.messages-shell .chat-titlebar,
+.messages-shell .message-composer,
+.messages-shell .profile-titlebar {
+  flex: 0 0 auto;
+}
+
+.messages-shell .message-composer textarea {
+  resize: none;
+}
+
+@media (max-width: 800px) {
+  .messages-shell {
+    grid-template-areas:
+      "header"
+      "content"
+      "tabs";
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .messages-shell .messages-page {
+    grid-area: content;
+    padding: 10px;
+  }
+
+  .messages-shell .messages-card,
+  .messages-shell .chat-card {
+    width: min(100%, 620px);
+    margin: 0 auto;
+    border-radius: 16px;
+  }
+
+  .messages-shell .chat-titlebar {
+    align-items: center;
+  }
+
+  .messages-shell .message-composer {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .messages-shell .messages-page {
+    padding: 7px;
+  }
+
+  .messages-shell .chat-titlebar {
+    gap: 8px;
+    padding: 7px 9px;
+  }
+
+  .messages-shell .chat-person strong {
+    font-size: 15px;
+  }
+
+  .messages-shell .chat-person small {
+    display: none;
+  }
+
+  .messages-shell .chat-links {
+    gap: 4px;
+    font-size: 10px;
+  }
+
+  .messages-shell .message-composer > label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .messages-shell .composer-actions {
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .messages-shell .composer-actions button {
+    min-height: 32px;
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+}
+
 .sona-signup-form label,
 .sona-signin-form label,
 .sona-person-copy strong,
