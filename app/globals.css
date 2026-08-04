@@ -2471,7 +2471,7 @@ textarea:focus-visible {
 
 .sona-directory-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 310px;
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 18px;
 }
@@ -2580,28 +2580,6 @@ textarea:focus-visible {
 .sona-card-arrow {
   color: #ad9bc8;
   font-size: 28px;
-}
-
-.sona-directory-layout .banner-rail {
-  max-height: none;
-  overflow: visible;
-  padding: 0;
-}
-
-.sona-directory-layout .banner-card {
-  border-color: var(--line);
-  border-radius: 18px;
-  box-shadow: 0 12px 34px rgba(78, 54, 121, 0.08);
-}
-
-.sona-directory-layout .panel-heading {
-  border-radius: 17px 17px 0 0;
-  background: #e9dff8;
-}
-
-.sona-directory-layout .banner-display {
-  border-color: var(--line);
-  background: #f1eafb;
 }
 
 .sona-empty-state {
@@ -3095,10 +3073,6 @@ textarea:focus-visible {
     height: 52px;
   }
 
-  .sona-directory-layout .banner-rail {
-    display: none;
-  }
-
   .sona-connect-hero {
     padding: 23px 18px;
   }
@@ -3472,26 +3446,6 @@ textarea {
   border-radius: 6px;
 }
 
-.sona-skeleton-showcase {
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 12px 34px rgba(78, 54, 121, 0.06);
-}
-
-.sona-bone-banner {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  border-radius: 0;
-}
-
-.sona-skeleton-showcase > div {
-  display: grid;
-  gap: 10px;
-  padding: 15px;
-}
-
 .sona-skeleton-profile .sona-profile-cover {
   background: linear-gradient(120deg, #d8c9ef, #b79ce3);
 }
@@ -3647,10 +3601,6 @@ textarea {
 
   .sona-skeleton-member-list {
     min-height: 62vh;
-  }
-
-  .sona-skeleton-showcase {
-    display: none;
   }
 
   .sona-bone-profile-avatar {

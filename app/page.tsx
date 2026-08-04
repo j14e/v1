@@ -1,6 +1,5 @@
 import { DirectoryClient } from "@/components/directory-client";
 import { createClient } from "@/lib/supabase/server";
-import type { BannerSubmission } from "@/types/banner";
 import type { InboxItem } from "@/types/inbox";
 import type { Message } from "@/types/message";
 import type { Profile, SessionUser } from "@/types/profile";
@@ -33,29 +32,7 @@ export default async function HomePage({
         )
         .eq("verified", true)
         .order("display_name", { ascending: true });
-  const [{ data: profiles }, { data: rawBanners }] = await Promise.all([
-    profilesRequest,
-    supabase
-      .from("banner_submissions")
-      .select("id,member_id,file_path,file_name,mime_type,created_at")
-      .limit(250),
-  ]);
-
-  const banners = (rawBanners ?? []) as Omit<
-    BannerSubmission,
-    "public_url"
-  >[];
-  const randomBanner = banners.length
-    ? banners[Math.floor(Math.random() * banners.length)]
-    : null;
-  const featuredBanner: BannerSubmission | null = randomBanner
-    ? {
-        ...randomBanner,
-        public_url: supabase.storage
-          .from("directory-banners")
-          .getPublicUrl(randomBanner.file_path).data.publicUrl,
-      }
-    : null;
+  const { data: profiles } = await profilesRequest;
 
   let ownProfile: Profile | null = null;
   let inbox: InboxItem[] = [];
@@ -141,7 +118,6 @@ export default async function HomePage({
       user={sessionUser}
       ownProfile={ownProfile}
       inbox={inbox}
-      featuredBanner={featuredBanner}
       openSignIn={auth === "signin"}
       initialSection={section === "connect" || section === "profile" ? section : "directory"}
     />

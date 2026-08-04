@@ -75,14 +75,6 @@ export function DirectoryLoadingSkeleton() {
               ))}
             </div>
           </section>
-          <aside className="sona-skeleton-showcase">
-            <Bone className="sona-bone-banner" />
-            <div>
-              <Bone className="sona-bone-person" />
-              <Bone className="sona-bone-study" />
-              <Bone className="sona-bone-pill wide" />
-            </div>
-          </aside>
         </div>
       </main>
     </SkeletonShell>

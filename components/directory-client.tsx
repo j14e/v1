@@ -5,9 +5,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthDialog } from "@/components/auth-dialog";
 import { Avatar } from "@/components/avatar";
-import { DirectoryBanner } from "@/components/directory-banner";
 import { createClient } from "@/lib/supabase/client";
-import type { BannerSubmission } from "@/types/banner";
 import type { InboxItem } from "@/types/inbox";
 import type { Profile, SessionUser } from "@/types/profile";
 
@@ -18,7 +16,6 @@ type DirectoryClientProps = {
   user: SessionUser;
   ownProfile: Profile | null;
   inbox: InboxItem[];
-  featuredBanner: BannerSubmission | null;
   openSignIn?: boolean;
   initialSection?: Section;
 };
@@ -50,7 +47,6 @@ export function DirectoryClient({
   user,
   ownProfile,
   inbox,
-  featuredBanner,
   openSignIn = false,
   initialSection = "directory",
 }: DirectoryClientProps) {
@@ -213,12 +209,6 @@ export function DirectoryClient({
                   )}
                 </div>
               </div>
-
-              <DirectoryBanner
-                featured={featuredBanner}
-                user={user}
-                onRequireSignIn={() => showAuth("signin")}
-              />
             </div>
           </section>
         ) : null}
