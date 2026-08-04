@@ -58,7 +58,7 @@ export function AuthDialog({
       return;
     }
 
-    window.location.reload();
+    window.location.href = "/";
   }
 
   async function handleSignUp(event: FormEvent<HTMLFormElement>) {

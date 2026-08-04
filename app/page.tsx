@@ -7,7 +7,12 @@ import type { Profile, SessionUser } from "@/types/profile";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ auth?: string }>;
+}) {
+  const { auth } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -147,6 +152,7 @@ export default async function HomePage() {
       ownProfile={ownProfile}
       inbox={inbox}
       featuredBanner={featuredBanner}
+      openSignIn={auth === "signin"}
     />
   );
 }

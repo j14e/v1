@@ -20,6 +20,7 @@ type DirectoryClientProps = {
   ownProfile: Profile | null;
   inbox: InboxItem[];
   featuredBanner: BannerSubmission | null;
+  openSignIn?: boolean;
 };
 
 type WaveState = "sending" | "sent" | "error";
@@ -50,12 +51,15 @@ export function DirectoryClient({
   ownProfile,
   inbox,
   featuredBanner,
+  openSignIn = false,
 }: DirectoryClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [department, setDepartment] = useState("");
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
+  const [authOpen, setAuthOpen] = useState(openSignIn);
+  const [authMode, setAuthMode] = useState<"signup" | "signin">(
+    openSignIn ? "signin" : "signup",
+  );
   const [departmentsOpen, setDepartmentsOpen] = useState(false);
   const [waveStates, setWaveStates] = useState<Record<string, WaveState>>({});
 
