@@ -353,12 +353,12 @@ export function ChatThread({
                   aria-label={`Connected with ${recipient.displayName}`}
                 >
                   <span className="connection-message-mark" aria-hidden="true">
-                    O
+                    S
                   </span>
                   <span>
-                    <strong>Connection notice</strong>
+                    <strong>Connected on SONA</strong>
                     <small>
-                      You and {recipient.displayName} were introduced.
+                      You and {recipient.displayName} connected randomly.
                     </small>
                   </span>
                   <time dateTime={message.created_at}>

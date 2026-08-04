@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/avatar";
+import { parseCourseCodes } from "@/lib/course-codes";
 import { departments, majors, programmeGroups, yearLevels } from "@/lib/catalog";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/types/profile";
@@ -63,23 +64,23 @@ export function AccountForm({ profile }: { profile: Profile }) {
     setError("");
     setMessage("");
     const formData = new FormData(event.currentTarget);
-    const courses = String(formData.get("courses") ?? "")
-      .split(",")
-      .map((course) => course.trim().toUpperCase())
-      .filter(Boolean)
-      .slice(0, 12);
+    const parsed = parseCourseCodes(String(formData.get("courses") ?? ""));
+    if (parsed.error) {
+      setError(parsed.error);
+      setBusy(false);
+      return;
+    }
 
     const supabase = createClient();
     const { error: updateError } = await supabase
       .from("profiles")
       .update({
         display_name: String(formData.get("display_name")).trim(),
-        availability_status: String(formData.get("availability_status")),
         year_level: String(formData.get("year_level")),
         programme: String(formData.get("programme")),
         department: String(formData.get("department")),
         major: String(formData.get("major")) || null,
-        courses,
+        courses: parsed.courses,
         updated_at: new Date().toISOString(),
       })
       .eq("id", profile.id);
@@ -131,17 +132,6 @@ export function AccountForm({ profile }: { profile: Profile }) {
             <input value={profile.email} readOnly aria-readonly="true" />
           </label>
           <label>
-            Availability
-            <select
-              name="availability_status"
-              required
-              defaultValue={profile.availability_status}
-            >
-              <option value="open_to_talk">Open to talk</option>
-              <option value="busy">Busy</option>
-            </select>
-          </label>
-          <label>
             Year
             <select
               name="year_level"
@@ -155,7 +145,8 @@ export function AccountForm({ profile }: { profile: Profile }) {
           </label>
           <label>
             Programme
-            <select name="programme" required defaultValue={profile.programme ?? ""}>
+            <select name="programme" defaultValue={profile.programme ?? ""}>
+              <option value="">Not listed</option>
               {programmeGroups.map((group) => (
                 <optgroup key={group.label} label={group.label}>
                   {group.options.map((item) => (
@@ -169,9 +160,9 @@ export function AccountForm({ profile }: { profile: Profile }) {
             Faculty or department
             <select
               name="department"
-              required
               defaultValue={profile.department ?? ""}
             >
+              <option value="">Not listed</option>
               {departments.map((item) => (
                 <option key={item}>{item}</option>
               ))}
@@ -187,8 +178,9 @@ export function AccountForm({ profile }: { profile: Profile }) {
             </select>
           </label>
           <label className="wide-field">
-            Current courses <span className="optional">(optional)</span>
-            <input name="courses" defaultValue={profile.courses.join(", ")} />
+            Current courses
+            <input name="courses" required placeholder="DES100, COMPSCI130" defaultValue={profile.courses.join(", ")} />
+            <small>Use course codes like DES100, separated by commas.</small>
           </label>
           {error ? <p className="form-error">{error}</p> : null}
           {message ? <p className="form-success">{message}</p> : null}

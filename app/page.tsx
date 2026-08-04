@@ -10,9 +10,9 @@ export const dynamic = "force-dynamic";
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ auth?: string }>;
+  searchParams: Promise<{ auth?: string; section?: string }>;
 }) {
-  const { auth } = await searchParams;
+  const { auth, section } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -121,7 +121,7 @@ export default async function HomePage({
         existing.unread += 1;
       }
     }
-    inbox = Array.from(conversations.values()).slice(0, 4);
+    inbox = Array.from(conversations.values());
   }
 
   const sessionUser: SessionUser = user
@@ -135,24 +135,15 @@ export default async function HomePage({
     ...profile,
     email: profile.email ?? "",
   }));
-  const newMembers = [...directoryProfiles]
-    .filter((profile) => profile.id !== user?.id)
-    .sort(
-      (left, right) =>
-        new Date(right.created_at).getTime() -
-        new Date(left.created_at).getTime(),
-    )
-    .slice(0, 12);
-
   return (
     <DirectoryClient
       profiles={directoryProfiles}
-      newMembers={newMembers}
       user={sessionUser}
       ownProfile={ownProfile}
       inbox={inbox}
       featuredBanner={featuredBanner}
       openSignIn={auth === "signin"}
+      initialSection={section === "connect" || section === "profile" ? section : "directory"}
     />
   );
 }

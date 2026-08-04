@@ -66,6 +66,13 @@ if (!removedConnectionRunError) {
   throw new Error("Removed connection matching function is still callable.");
 }
 
+const { error: anonymousConnectError } =
+  await supabase.rpc("connect_random_member");
+
+if (!anonymousConnectError) {
+  throw new Error("Anonymous visitors can run the random Connect action.");
+}
+
 const { error: bannerReadError } = await supabase
   .from("banner_submissions")
   .select("id,file_path")

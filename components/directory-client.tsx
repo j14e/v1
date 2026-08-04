@@ -5,30 +5,31 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthDialog } from "@/components/auth-dialog";
 import { Avatar } from "@/components/avatar";
-import { AvailabilityBadge } from "@/components/availability-badge";
 import { DirectoryBanner } from "@/components/directory-banner";
 import { createClient } from "@/lib/supabase/client";
-import { departments } from "@/lib/catalog";
 import type { BannerSubmission } from "@/types/banner";
 import type { InboxItem } from "@/types/inbox";
 import type { Profile, SessionUser } from "@/types/profile";
 
+type Section = "directory" | "connect" | "profile";
+
 type DirectoryClientProps = {
   profiles: Profile[];
-  newMembers: Profile[];
   user: SessionUser;
   ownProfile: Profile | null;
   inbox: InboxItem[];
   featuredBanner: BannerSubmission | null;
   openSignIn?: boolean;
+  initialSection?: Section;
 };
 
-type WaveState = "sending" | "sent" | "error";
+type ConnectedMember = {
+  matched_id: string;
+  display_name: string;
+};
 
 function inboxPreview(item: InboxItem, currentUserId: string) {
-  if (item.latest.message_type === "connection") {
-    return "Connection notice";
-  }
+  if (item.latest.message_type === "connection") return "Connected on SONA";
   const prefix = item.latest.sender_id === currentUserId ? "You: " : "";
   if (item.latest.body) return `${prefix}${item.latest.body}`;
   if (item.latest.media_type === "image") return `${prefix}sent an image`;
@@ -46,31 +47,30 @@ function formatInboxTime(value: string) {
 
 export function DirectoryClient({
   profiles,
-  newMembers,
   user,
   ownProfile,
   inbox,
   featuredBanner,
   openSignIn = false,
+  initialSection = "directory",
 }: DirectoryClientProps) {
   const router = useRouter();
+  const [activeSection, setActiveSection] = useState<Section>(initialSection);
   const [query, setQuery] = useState("");
-  const [department, setDepartment] = useState("");
   const [authOpen, setAuthOpen] = useState(openSignIn);
   const [authMode, setAuthMode] = useState<"signup" | "signin">(
     openSignIn ? "signin" : "signup",
   );
-  const [departmentsOpen, setDepartmentsOpen] = useState(false);
-  const [waveStates, setWaveStates] = useState<Record<string, WaveState>>({});
+  const [connecting, setConnecting] = useState(false);
+  const [connectNotice, setConnectNotice] = useState("");
+  const [connectError, setConnectError] = useState("");
 
   const filteredProfiles = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return profiles.filter((profile) => {
-      const matchesDepartment =
-        !department || profile.department === department;
-      const haystack = [
+    if (!needle) return profiles;
+    return profiles.filter((profile) =>
+      [
         profile.display_name,
-        profile.availability_status === "open_to_talk" ? "open to talk" : "busy",
         profile.year_level,
         profile.programme,
         profile.major,
@@ -79,10 +79,10 @@ export function DirectoryClient({
       ]
         .filter(Boolean)
         .join(" ")
-        .toLowerCase();
-      return matchesDepartment && (!needle || haystack.includes(needle));
-    });
-  }, [department, profiles, query]);
+        .toLowerCase()
+        .includes(needle),
+    );
+  }, [profiles, query]);
 
   function showAuth(mode: "signup" | "signin") {
     setAuthMode(mode);
@@ -100,364 +100,216 @@ export function DirectoryClient({
   async function signOut() {
     const supabase = createClient();
     await supabase.auth.signOut();
-    window.location.reload();
+    window.location.href = "/";
   }
 
-  async function sayHi(profile: Profile) {
+  async function connectRandomly() {
     if (!user) {
       showAuth("signin");
       return;
     }
-    if (!ownProfile || profile.id === user.id) return;
 
-    setWaveStates((states) => ({ ...states, [profile.id]: "sending" }));
+    setConnecting(true);
+    setConnectNotice("");
+    setConnectError("");
     const supabase = createClient();
-    const { error } = await supabase.from("messages").insert({
-      sender_id: user.id,
-      recipient_id: profile.id,
-      message_type: "member",
-      body: `${ownProfile.display_name} waved at you`,
-    });
+    const { data, error } = await supabase.rpc("connect_random_member");
+    const match = (data as ConnectedMember[] | null)?.[0];
 
-    setWaveStates((states) => ({
-      ...states,
-      [profile.id]: error ? "error" : "sent",
-    }));
-    if (!error) router.refresh();
+    if (error) setConnectError(error.message);
+    else if (!match) setConnectError("There is nobody available to connect with yet.");
+    else {
+      setConnectNotice(`You connected with ${match.display_name}.`);
+      router.refresh();
+    }
+    setConnecting(false);
   }
 
   return (
-    <div className="site-shell">
-      <header className="topbar">
-        <Link className="wordmark" href="/">
-          v1
-        </Link>
-        <nav className="primary-nav" aria-label="Main navigation">
-          <Link className="active" href="/">
-            directory
-          </Link>
-          {user ? <Link href="/messages">messages</Link> : null}
-          <a href="#about">about</a>
-        </nav>
-        <div className="member-actions">
+    <div className="sona-app-shell">
+      <header className="sona-topbar">
+        <Link className="sona-wordmark" href="/">SONA</Link>
+        <div className="sona-session">
           {user ? (
             <>
-              <span className="signed-in-as">
-                signed in as {ownProfile?.display_name ?? user.email}
-              </span>
-              <Link className="mobile-nav-link" href="/messages">
-                messages
-              </Link>
-              <Link href="/account">my profile</Link>
-              <button className="nav-button" type="button" onClick={signOut}>
-                sign out
-              </button>
+              <span>{ownProfile?.display_name ?? user.email}</span>
+              <button type="button" onClick={signOut}>Sign out</button>
             </>
           ) : (
             <>
-              <button
-                className="nav-button"
-                type="button"
-                onClick={() => showAuth("signin")}
-              >
-                sign in
-              </button>
-              <button
-                className="join-button"
-                type="button"
-                onClick={() => showAuth("signup")}
-              >
-                join v1
-              </button>
+              <button type="button" onClick={() => showAuth("signin")}>Sign in</button>
+              <button className="sona-join-button" type="button" onClick={() => showAuth("signup")}>Join</button>
             </>
           )}
         </div>
       </header>
 
-      <div className="utility-strip">
-        <strong>University of Auckland</strong>
-        <span>student contact directory</span>
-        <span className="utility-status">
-          {profiles.length} verified {profiles.length === 1 ? "member" : "members"}
-        </span>
-      </div>
-
-      <div className="page-grid directory-layout">
-        <aside className="sidebar">
-          <section className="side-panel directory-browser">
-            <button
-              className="panel-heading panel-toggle"
-              type="button"
-              aria-expanded={departmentsOpen}
-              aria-controls="department-links"
-              onClick={() => setDepartmentsOpen((open) => !open)}
-            >
-              <span>departments</span>
-              <span aria-hidden="true">{departmentsOpen ? "−" : "+"}</span>
-            </button>
-            <button
-              className={!department ? "side-link selected" : "side-link"}
-              type="button"
-              onClick={() => setDepartment("")}
-            >
-              All members directory
-            </button>
-            {departmentsOpen ? (
-              <div id="department-links">
-                {departments.map((item) => (
-                  <button
-                    className={
-                      department === item ? "side-link selected" : "side-link"
-                    }
-                    type="button"
-                    key={item}
-                    onClick={() => setDepartment(item)}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
+      <nav className="sona-tabs" aria-label="Main sections">
+        {(["directory", "connect", "profile"] as Section[]).map((section) => (
+          <button
+            key={section}
+            type="button"
+            className={activeSection === section ? "active" : ""}
+            aria-current={activeSection === section ? "page" : undefined}
+            onClick={() => setActiveSection(section)}
+          >
+            {section}
+            {section === "connect" && inbox.some((item) => item.unread) ? (
+              <span className="sona-tab-dot" aria-label="Unread messages" />
             ) : null}
-          </section>
+          </button>
+        ))}
+      </nav>
 
-          <section className="side-panel inbox-panel">
-            <div className="panel-heading">
-              <span>inbox</span>
-              {user ? <Link href="/messages">open all</Link> : null}
+      <main className="sona-main">
+        {activeSection === "directory" ? (
+          <section className="sona-section" aria-labelledby="directory-title">
+            <div className="sona-section-heading">
+              <div>
+                <span className="sona-eyebrow">University of Auckland</span>
+                <h1 id="directory-title">Student directory</h1>
+              </div>
+              <span>{profiles.length} members</span>
             </div>
-            {user ? (
-              inbox.length ? (
-                <div className="homepage-inbox-list">
-                  {inbox.map((item) => (
-                    <Link
-                      className={item.unread ? "homepage-inbox-row unread" : "homepage-inbox-row"}
-                      href={`/messages/${item.person.id}`}
-                      key={item.person.id}
+
+            <div className="sona-directory-layout">
+              <div className="sona-directory-column">
+                <div className="sona-search-wrap">
+                  <label htmlFor="sona-directory-search">Search the directory</label>
+                  <input
+                    id="sona-directory-search"
+                    type="search"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Name, course, study or year"
+                  />
+                  <small>{filteredProfiles.length} result{filteredProfiles.length === 1 ? "" : "s"}</small>
+                </div>
+
+                <div className="sona-directory-list" aria-label="Directory profiles">
+                  {filteredProfiles.length ? filteredProfiles.map((profile) => (
+                    <button
+                      className="sona-directory-card"
+                      type="button"
+                      key={profile.id}
+                      onClick={() => openProfile(profile.id)}
                     >
-                      <Avatar
-                        name={item.person.display_name}
-                        url={item.person.avatar_url}
-                        size="small"
-                      />
-                      <span>
-                        <strong>{item.person.display_name}</strong>
-                        <small>{inboxPreview(item, user.id)}</small>
-                      </span>
-                      <span className="homepage-inbox-meta">
-                        <time dateTime={item.latest.created_at}>
-                          {formatInboxTime(item.latest.created_at)}
-                        </time>
-                        {item.unread ? <b>{item.unread}</b> : null}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p>No messages yet.</p>
-              )
-            ) : (
-              <div className="homepage-inbox-guest">
-                <p>Sign in to see messages and new connections.</p>
-                <button
-                  className="side-link"
-                  type="button"
-                  onClick={() => showAuth("signin")}
-                >
-                  sign in to inbox
-                </button>
-              </div>
-            )}
-          </section>
-
-          <section className="side-panel about-panel" id="about">
-            <div className="panel-heading">about v1</div>
-            <p>
-              Find people across faculties, majors, years, and courses. Directory
-              access is public. Profiles, friends, and messaging are for
-              verified students.
-            </p>
-          </section>
-
-        </aside>
-
-        <main className="directory-main">
-          <div className="section-heading">
-            <div>
-              <h1>Contact directory</h1>
-              <p>
-                Browse verified University of Auckland students. Sign in to open
-                a profile, send a message, or add someone as a friend.
-              </p>
-            </div>
-          </div>
-
-          <div className="homepage-discovery-grid">
-            <section
-              className="new-members-panel"
-              aria-labelledby="new-members-title"
-            >
-              <div className="discovery-titlebar">
-                <div>
-                  <h2 id="new-members-title">Newly joined members</h2>
-                  <p>Meet the latest people added to the directory.</p>
-                </div>
-                <span>{newMembers.length} latest</span>
-              </div>
-              {newMembers.length ? (
-                <div className="new-members-scroll">
-                  {newMembers.map((profile) => {
-                    const waveState = waveStates[profile.id];
-                    return (
-                      <article className="new-member-card" key={profile.id}>
-                        <button
-                          className="new-member-profile"
-                          type="button"
-                          onClick={() => openProfile(profile.id)}
-                        >
-                          <Avatar
-                            name={profile.display_name}
-                            url={profile.avatar_url}
-                            size="large"
-                          />
-                          <span>
-                            <strong>{profile.display_name}</strong>
-                            <small>{profile.major || "Major not listed"}</small>
-                            <small>
-                              {profile.programme || "Studies not listed"}
-                            </small>
-                          </span>
-                        </button>
-                        <button
-                          className="say-hi-button"
-                          type="button"
-                          disabled={waveState === "sending" || waveState === "sent"}
-                          onClick={() => void sayHi(profile)}
-                        >
-                          {waveState === "sending"
-                            ? "sending..."
-                            : waveState === "sent"
-                              ? "waved"
-                              : waveState === "error"
-                                ? "try again"
-                                : "say hi"}
-                        </button>
-                      </article>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="new-members-empty">
-                  New members will appear here as they join.
-                </p>
-              )}
-            </section>
-
-          </div>
-
-          <div className="directory-tools">
-            <label htmlFor="directory-search">Search people</label>
-            <input
-              id="directory-search"
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="name, major, department, or course"
-            />
-            <span className="result-count">
-              showing {filteredProfiles.length} of {profiles.length}
-            </span>
-          </div>
-
-          <section className="directory-panel" aria-label="People">
-            <div className="directory-header" aria-hidden="true">
-              <span>person</span>
-              <span>year</span>
-              <span>programme / major</span>
-              <span>faculty or department</span>
-              <span />
-            </div>
-
-            {filteredProfiles.length ? (
-              <div className="directory-list">
-                {filteredProfiles.map((profile) => (
-                  <button
-                    className="directory-row"
-                    type="button"
-                    key={profile.id}
-                    onClick={() => openProfile(profile.id)}
-                    aria-label={`Open ${profile.display_name}'s profile`}
-                  >
-                    <span className="person-cell">
-                      <Avatar
-                        name={profile.display_name}
-                        url={profile.avatar_url}
-                      />
-                      <span>
+                      <Avatar name={profile.display_name} url={profile.avatar_url} />
+                      <span className="sona-person-copy">
                         <strong>{profile.display_name}</strong>
-                        <AvailabilityBadge
-                          status={profile.availability_status}
-                        />
+                        <span>{profile.programme || profile.major || "Studies not added"}</span>
                         <small>
-                          {profile.is_demo
-                            ? "demo profile"
-                            : user
-                              ? profile.email
-                              : "verified student"}
+                          {profile.year_level}
+                          {profile.courses.length ? ` · ${profile.courses.slice(0, 3).join(", ")}` : ""}
                         </small>
                       </span>
-                    </span>
-                    <span>{profile.year_level}</span>
-                    <span>
-                      {profile.programme || "Programme not listed"}
-                      {profile.major ? (
-                        <small>{profile.major}</small>
-                      ) : null}
-                    </span>
-                    <span>{profile.department || "Not listed"}</span>
-                    <span className="row-action">
-                      {user ? "view profile →" : "join to view →"}
-                    </span>
-                  </button>
-                ))}
+                      <span className="sona-card-arrow" aria-hidden="true">›</span>
+                    </button>
+                  )) : (
+                    <div className="sona-empty-state">
+                      <strong>No matching profiles</strong>
+                      <p>Try a name, course code, subject, programme, or year.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <DirectoryBanner
+                featured={featuredBanner}
+                user={user}
+                onRequireSignIn={() => showAuth("signin")}
+              />
+            </div>
+          </section>
+        ) : null}
+
+        {activeSection === "connect" ? (
+          <section className="sona-section sona-connect-section" aria-labelledby="connect-title">
+            <div className="sona-connect-hero">
+              <span className="sona-eyebrow">Meet someone new</span>
+              <h1 id="connect-title">Connect</h1>
+              <p>Get introduced to one random person from the SONA directory.</p>
+              <button className="button sona-connect-button" type="button" disabled={connecting} onClick={() => void connectRandomly()}>
+                {connecting ? "Connecting…" : "Connect me randomly"}
+              </button>
+              {connectNotice ? <p className="sona-connect-success" role="status">{connectNotice}</p> : null}
+              {connectError ? <p className="form-error" role="alert">{connectError}</p> : null}
+            </div>
+
+            <div className="sona-history-card">
+              <div className="sona-history-heading">
+                <h2>Chat history</h2>
+                {user && inbox.length ? <span>{inbox.length} conversation{inbox.length === 1 ? "" : "s"}</span> : null}
+              </div>
+              {user ? (
+                inbox.length ? (
+                  <div className="sona-chat-list">
+                    {inbox.map((item) => (
+                      <Link className={item.unread ? "sona-chat-row unread" : "sona-chat-row"} href={`/messages/${item.person.id}`} key={item.person.id}>
+                        <Avatar name={item.person.display_name} url={item.person.avatar_url} size="small" />
+                        <span>
+                          <strong>{item.person.display_name}</strong>
+                          <small>{inboxPreview(item, user.id)}</small>
+                        </span>
+                        <span className="sona-chat-meta">
+                          <time dateTime={item.latest.created_at}>{formatInboxTime(item.latest.created_at)}</time>
+                          {item.unread ? <b>{item.unread}</b> : null}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="sona-empty-state"><strong>No chats yet</strong><p>Use the connect button or open a directory profile to start one.</p></div>
+                )
+              ) : (
+                <div className="sona-empty-state">
+                  <strong>Sign in to connect</strong>
+                  <p>Your connections and chat history will appear here.</p>
+                  <button className="button sona-primary-button" type="button" onClick={() => showAuth("signin")}>Sign in</button>
+                </div>
+              )}
+            </div>
+          </section>
+        ) : null}
+
+        {activeSection === "profile" ? (
+          <section className="sona-section" aria-labelledby="profile-title">
+            {user && ownProfile ? (
+              <div className="sona-profile-card">
+                <div className="sona-profile-cover" />
+                <div className="sona-profile-content">
+                  <Avatar name={ownProfile.display_name} url={ownProfile.avatar_url} size="large" />
+                  <div className="sona-profile-title">
+                    <span className="sona-eyebrow">Your profile</span>
+                    <h1 id="profile-title">{ownProfile.display_name}</h1>
+                    <p>{ownProfile.email}</p>
+                  </div>
+                  <dl className="sona-profile-details">
+                    <div><dt>Year</dt><dd>{ownProfile.year_level}</dd></div>
+                    <div><dt>Studies</dt><dd>{ownProfile.programme || "Not added yet"}</dd></div>
+                    <div><dt>Major</dt><dd>{ownProfile.major || "Not added yet"}</dd></div>
+                    <div><dt>Department</dt><dd>{ownProfile.department || "Not added yet"}</dd></div>
+                    <div><dt>Courses</dt><dd>{ownProfile.courses.length ? ownProfile.courses.join(", ") : "Not added yet"}</dd></div>
+                  </dl>
+                  <Link className="button sona-primary-button sona-edit-link" href="/account">Edit profile</Link>
+                </div>
               </div>
             ) : (
-              <div className="empty-directory">
-                <strong>
-                  {profiles.length
-                    ? "No members match this search."
-                    : "The directory is ready for its first verified member."}
-                </strong>
-                <p>
-                  {profiles.length
-                    ? "Try a broader name, course, or department."
-                    : "Create a profile with your University student email. It appears here after email confirmation."}
-                </p>
-                {!user ? (
-                  <button
-                    className="button"
-                    type="button"
-                    onClick={() => showAuth("signup")}
-                  >
-                    Join the directory
-                  </button>
-                ) : null}
+              <div className="sona-profile-card sona-profile-guest">
+                <span className="sona-eyebrow">Your space on SONA</span>
+                <h1 id="profile-title">Create your profile</h1>
+                <p>Join the directory, add your studies, and start meeting other students.</p>
+                <div className="sona-guest-actions">
+                  <button className="button sona-primary-button" type="button" onClick={() => showAuth("signup")}>Join SONA</button>
+                  <button className="sona-secondary-button" type="button" onClick={() => showAuth("signin")}>Sign in</button>
+                </div>
               </div>
             )}
           </section>
+        ) : null}
+      </main>
 
-        </main>
-        <DirectoryBanner
-          featured={featuredBanner}
-          user={user}
-          onRequireSignIn={() => showAuth("signin")}
-        />
-      </div>
-
-      <AuthDialog
-        open={authOpen}
-        initialMode={authMode}
-        onClose={() => setAuthOpen(false)}
-      />
+      <AuthDialog open={authOpen} initialMode={authMode} onClose={() => setAuthOpen(false)} />
     </div>
   );
 }

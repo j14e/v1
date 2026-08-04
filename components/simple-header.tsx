@@ -14,12 +14,12 @@ export function SimpleHeader({ name }: { name: string }) {
     <>
       <header className="topbar">
         <Link className="wordmark" href="/">
-          v1
+          SONA
         </Link>
         <nav className="primary-nav" aria-label="Main navigation">
           <Link href="/">directory</Link>
-          <Link href="/messages">messages</Link>
-          <Link href="/account">my profile</Link>
+          <Link href="/?section=connect">connect</Link>
+          <Link href="/account">profile</Link>
         </nav>
         <div className="member-actions">
           <span className="signed-in-as">signed in as {name}</span>
