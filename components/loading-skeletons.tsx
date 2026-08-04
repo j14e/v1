@@ -42,13 +42,16 @@ export function DirectoryLoadingSkeleton() {
     <SkeletonShell>
       <main className="sona-main">
         <div className="sona-new-members sona-new-members-skeleton">
-          {rows.slice(0, 5).map((row) => (
-            <div className="sona-new-member" key={row}>
-              <Bone className="sona-bone-new-avatar" />
-              <Bone className="sona-bone-new-name" />
-              <Bone className="sona-bone-new-course" />
-            </div>
-          ))}
+          <strong className="sona-new-members-title">New users</strong>
+          <div className="sona-new-members-list">
+            {rows.slice(0, 5).map((row) => (
+              <div className="sona-new-member" key={row}>
+                <Bone className="sona-bone-new-avatar" />
+                <Bone className="sona-bone-new-name" />
+                <Bone className="sona-bone-new-course" />
+              </div>
+            ))}
+          </div>
         </div>
         <div className="sona-directory-layout">
           <section className="sona-directory-column sona-skeleton-directory">

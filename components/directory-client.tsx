@@ -35,19 +35,22 @@ function NewMembersStrip({
   if (!profiles.length) return null;
 
   return (
-    <div className="sona-new-members" aria-label="New members">
-      {profiles.map((profile) => (
-        <button
-          className="sona-new-member"
-          type="button"
-          key={profile.id}
-          onClick={() => onOpen(profile.id)}
-        >
-          <Avatar name={profile.display_name} url={profile.avatar_url} />
-          <strong>{profile.display_name}</strong>
-          <small>{profile.courses.length ? profile.courses.slice(0, 2).join(", ") : profile.year_level}</small>
-        </button>
-      ))}
+    <div className="sona-new-members" aria-label="New users">
+      <strong className="sona-new-members-title">New users</strong>
+      <div className="sona-new-members-list">
+        {profiles.map((profile) => (
+          <button
+            className="sona-new-member"
+            type="button"
+            key={profile.id}
+            onClick={() => onOpen(profile.id)}
+          >
+            <Avatar name={profile.display_name} url={profile.avatar_url} />
+            <strong>{profile.display_name}</strong>
+            <small>{profile.courses.length ? profile.courses.slice(0, 2).join(", ") : profile.year_level}</small>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -108,10 +111,9 @@ export function DirectoryClient({
   }, [profiles, query]);
 
   const newMembers = useMemo(
-    () => profiles
-      .filter((profile) => !profile.is_demo)
+    () => [...profiles]
       .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
-      .slice(0, 12),
+      .slice(0, 20),
     [profiles],
   );
 

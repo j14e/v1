@@ -2487,20 +2487,36 @@ textarea:focus-visible {
 }
 
 .sona-new-members {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
   margin-bottom: 14px;
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.86);
+}
+
+.sona-new-members-title {
+  padding-left: 4px;
+  color: var(--ink);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.sona-new-members-list {
+  min-width: 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
 }
 
-.sona-new-members::-webkit-scrollbar {
+.sona-new-members-list::-webkit-scrollbar {
   display: none;
 }
 
@@ -4011,4 +4027,173 @@ textarea {
 .sona-link-tabs a:hover {
   background: #e7e4e9;
   color: #4e4756;
+}
+
+/* Strict monochrome palette */
+:root {
+  --blue-950: #1f1f1f;
+  --blue-900: #303030;
+  --blue-800: #454545;
+  --blue-700: #606060;
+  --blue-100: #f2f2f2;
+  --ink: #222222;
+  --muted: #6b6b6b;
+  --line: #dddddd;
+  --line-dark: #c8c8c8;
+  --shell: #ffffff;
+}
+
+html,
+body,
+.sona-app-shell,
+.site-shell,
+.sona-signup-page {
+  background: #ffffff;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-color: #707070;
+}
+
+.topbar,
+.sona-topbar,
+.sona-skeleton-topbar,
+.sona-dialog-heading {
+  background: #303030;
+}
+
+.wordmark,
+.primary-nav a:hover,
+.primary-nav a.active {
+  background: #252525;
+}
+
+.button,
+.join-button,
+.sona-tab-dot,
+.sona-chat-meta b,
+.connection-message-mark {
+  background: #383838;
+}
+
+.button:hover,
+.join-button:hover {
+  background: #202020;
+}
+
+.sona-session .sona-join-button,
+.sona-signup-wordmark,
+.sona-back-link,
+.sona-eyebrow {
+  color: #3f3f3f;
+}
+
+.utility-strip,
+.panel-heading,
+.profile-titlebar,
+.discovery-titlebar,
+.directory-header,
+.sona-tabs,
+.sona-search-wrap,
+.sona-history-heading,
+.chat-titlebar,
+.admin-titlebar,
+.sona-skeleton-search,
+.sona-skeleton-card-heading {
+  border-color: #dddddd;
+  background: #f2f2f2;
+}
+
+.sona-tabs button {
+  color: #666666;
+}
+
+.sona-tabs button:hover,
+.sona-new-member:hover,
+.sona-directory-card:hover,
+.sona-chat-row:hover,
+.sona-chat-row.unread,
+.sona-link-tabs a:hover {
+  background: #ededed;
+  color: #444444;
+}
+
+.sona-tabs button.active {
+  background: #dddddd;
+  color: #333333;
+}
+
+.avatar,
+.profile-photo,
+.avatar-editor {
+  background: #e5e5e5;
+  color: #555555;
+}
+
+.sona-new-members,
+.sona-directory-column,
+.sona-history-card,
+.sona-profile-card,
+.sona-auth-dialog,
+.sona-signup-card,
+.profile-card,
+.account-card,
+.messages-card,
+.chat-card,
+.admin-directory,
+.admin-gate,
+.message-card {
+  border-color: #d8d8d8;
+  background-color: #ffffff;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.07);
+}
+
+.sona-connect-hero,
+.sona-profile-cover,
+.sona-skeleton-profile .sona-profile-cover,
+.sona-profile-details,
+.sona-skeleton-details,
+.sona-form-notice,
+.sona-connect-success,
+.connection-message {
+  background: #e8e8e8;
+  color: #444444 !important;
+}
+
+.sona-dialog-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.sona-auth-dialog {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.sona-signup-form label,
+.sona-signin-form label,
+.sona-person-copy strong,
+.sona-empty-state strong,
+.sona-history-heading h2,
+.sona-chat-row strong,
+.sona-profile-title h1,
+.sona-profile-guest h1,
+.sona-signup-card h1 {
+  color: #333333;
+}
+
+.sona-person-copy span {
+  color: #666666;
+}
+
+.sona-card-arrow {
+  color: #aaaaaa;
+}
+
+.sona-bone,
+.sona-tab-bone.active {
+  background: linear-gradient(100deg, #dddddd 20%, #f1f1f1 38%, #dddddd 56%);
+  background-size: 220% 100%;
 }
