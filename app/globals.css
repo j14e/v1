@@ -4090,7 +4090,7 @@ textarea:focus-visible {
 
 .sona-connect-button,
 .sona-connect-button:hover {
-  border: 1px solid #000000;
+  border: 0;
   background: #b4fa02;
   color: #000000;
 }
