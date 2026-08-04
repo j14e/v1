@@ -358,9 +358,9 @@ export function DirectoryClient({
       <AuthDialog open={authOpen} initialMode={authMode} onClose={() => setAuthOpen(false)} />
       {shareOpen ? (
         <div className="dialog-backdrop sona-dialog-backdrop" onMouseDown={() => setShareOpen(false)}>
-          <section className="sona-share-dialog" role="dialog" aria-modal="true" aria-labelledby="sona-share-title" onMouseDown={(event) => event.stopPropagation()}>
+          <section className="sona-share-dialog" role="dialog" aria-modal="true" aria-label="Share SONA" onMouseDown={(event) => event.stopPropagation()}>
             <div className="sona-share-heading">
-              <strong id="sona-share-title">Share SONA</strong>
+              <SonaLogo linked={false} />
               <button type="button" onClick={() => setShareOpen(false)} aria-label="Close">×</button>
             </div>
             <div className="sona-share-body">
