@@ -4232,6 +4232,7 @@ textarea:focus-visible {
 
 .sona-logo-page {
   width: 180px;
+  aspect-ratio: 2.93 / 1;
 }
 
 .sona-logo-image {
@@ -4242,6 +4243,16 @@ textarea:focus-visible {
   max-width: none;
   height: auto;
   transform: translate(-13.85%, -38.44%);
+}
+
+.sona-logo-link-page,
+.sona-logo-link-page .sona-logo-crop {
+  background: transparent;
+}
+
+.sona-logo-page .sona-logo-image {
+  width: 137%;
+  transform: translate(-13.48%, -37.64%);
 }
 
 @media (max-width: 520px) {
