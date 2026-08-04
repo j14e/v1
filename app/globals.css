@@ -4088,6 +4088,13 @@ textarea:focus-visible {
   background: #202020;
 }
 
+.sona-connect-button,
+.sona-connect-button:hover {
+  border: 1px solid #000000;
+  background: #b4fa02;
+  color: #000000;
+}
+
 .sona-session .sona-join-button,
 .sona-signup-wordmark,
 .sona-back-link,
