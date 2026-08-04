@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,8 @@ type ConnectedMember = {
   matched_id: string;
   display_name: string;
 };
+
+const SONA_SIGNUP_URL = "https://v1-gray-one.vercel.app/signup";
 
 function NewMembersStrip({
   profiles,
@@ -91,6 +94,8 @@ export function DirectoryClient({
   const [connecting, setConnecting] = useState(false);
   const [connectNotice, setConnectNotice] = useState("");
   const [connectError, setConnectError] = useState("");
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareNotice, setShareNotice] = useState("");
 
   const filteredProfiles = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -159,6 +164,32 @@ export function DirectoryClient({
     setConnecting(false);
   }
 
+  async function copySignupLink() {
+    try {
+      await navigator.clipboard.writeText(SONA_SIGNUP_URL);
+      setShareNotice("Link copied.");
+    } catch {
+      setShareNotice("Select the link above to copy it.");
+    }
+  }
+
+  async function shareSignupLink() {
+    if (!navigator.share) {
+      await copySignupLink();
+      return;
+    }
+
+    try {
+      await navigator.share({
+        title: "Join SONA",
+        text: "Join me on SONA.",
+        url: SONA_SIGNUP_URL,
+      });
+    } catch {
+      // Closing the native share sheet does not need an error message.
+    }
+  }
+
   return (
     <div className="sona-app-shell">
       <header className="sona-topbar">
@@ -173,6 +204,7 @@ export function DirectoryClient({
             <>
               <button type="button" onClick={() => showAuth("signin")}>Sign in</button>
               <button className="sona-join-button" type="button" onClick={() => showAuth("signup")}>Join</button>
+              <button type="button" onClick={() => { setShareNotice(""); setShareOpen(true); }}>Share</button>
             </>
           )}
         </div>
@@ -324,6 +356,26 @@ export function DirectoryClient({
       </main>
 
       <AuthDialog open={authOpen} initialMode={authMode} onClose={() => setAuthOpen(false)} />
+      {shareOpen ? (
+        <div className="dialog-backdrop sona-dialog-backdrop" onMouseDown={() => setShareOpen(false)}>
+          <section className="sona-share-dialog" role="dialog" aria-modal="true" aria-labelledby="sona-share-title" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="sona-share-heading">
+              <strong id="sona-share-title">Share SONA</strong>
+              <button type="button" onClick={() => setShareOpen(false)} aria-label="Close">×</button>
+            </div>
+            <div className="sona-share-body">
+              <Image src="/v1-signin-qr.png" alt="QR code for joining SONA" width={240} height={240} priority />
+              <strong>Scan to join</strong>
+              <input value={SONA_SIGNUP_URL} readOnly aria-label="SONA signup link" onFocus={(event) => event.currentTarget.select()} />
+              <div className="sona-share-actions">
+                <button className="button" type="button" onClick={() => void shareSignupLink()}>Share link</button>
+                <button type="button" onClick={() => void copySignupLink()}>Copy link</button>
+              </div>
+              {shareNotice ? <p role="status">{shareNotice}</p> : null}
+            </div>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }

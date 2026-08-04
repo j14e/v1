@@ -4196,6 +4196,83 @@ textarea:focus-visible {
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
 }
 
+.sona-share-dialog {
+  width: min(390px, 100%);
+  overflow: hidden;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.sona-share-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #b4fa02;
+  color: #000000;
+}
+
+.sona-share-heading button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.12);
+  color: #000000;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.sona-share-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 22px;
+}
+
+.sona-share-body img {
+  width: min(240px, 72vw);
+  height: auto;
+}
+
+.sona-share-body input {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  background: #f2f2f2;
+  color: #333333;
+  padding: 9px 11px;
+}
+
+.sona-share-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.sona-share-actions button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.sona-share-actions .button {
+  background: #b4fa02;
+  color: #000000;
+}
+
+.sona-share-body p {
+  margin: 0;
+  color: #555555;
+  font-size: 12px;
+}
+
 .sona-signup-form label,
 .sona-signin-form label,
 .sona-person-copy strong,
