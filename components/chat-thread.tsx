@@ -60,14 +60,8 @@ export function ChatThread({
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [recording, setRecording] = useState(false);
-  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messageEndRef = useRef<HTMLDivElement>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ block: "end" });
@@ -118,22 +112,10 @@ export function ChatThread({
     };
   }, [currentUser.id, recipient.id]);
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current !== null) window.clearInterval(timerRef.current);
-      if (recorderRef.current?.state === "recording") {
-        recorderRef.current.onstop = null;
-        recorderRef.current.stop();
-      }
-      streamRef.current?.getTracks().forEach((track) => track.stop());
-    };
-  }, []);
-
   async function insertMessage(values: {
     body?: string | null;
-    mediaType?: "image" | "audio" | null;
+    mediaType?: "image" | null;
     mediaPath?: string | null;
-    durationSeconds?: number | null;
   }) {
     const supabase = createClient();
     const { data, error: insertError } = await supabase
@@ -145,7 +127,7 @@ export function ChatThread({
         body: values.body || null,
         media_type: values.mediaType || null,
         media_path: values.mediaPath || null,
-        duration_seconds: values.durationSeconds ?? null,
+        duration_seconds: null,
       })
       .select(
         "id,sender_id,recipient_id,message_type,body,media_type,media_path,duration_seconds,created_at,read_at",
@@ -187,17 +169,13 @@ export function ChatThread({
     event.currentTarget.form?.requestSubmit();
   }
 
-  async function sendMedia(
-    file: File,
-    mediaType: "image" | "audio",
-    durationSeconds?: number,
-  ) {
+  async function sendMedia(file: File) {
     setBusy(true);
     setError("");
     const supabase = createClient();
     const extension =
       file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") ||
-      (mediaType === "image" ? "jpg" : "webm");
+      "jpg";
     const path = `${currentUser.id}/${recipient.id}/${crypto.randomUUID()}.${extension}`;
 
     try {
@@ -210,12 +188,11 @@ export function ChatThread({
         });
       if (uploadError) throw uploadError;
 
-      const caption = mediaType === "image" ? draft.trim() : "";
+      const caption = draft.trim();
       const message = await insertMessage({
         body: caption || null,
-        mediaType,
+        mediaType: "image",
         mediaPath: path,
-        durationSeconds,
       });
       const { data: signed } = await supabase.storage
         .from("message-media")
@@ -227,7 +204,7 @@ export function ChatThread({
           media_url: signed?.signedUrl ?? null,
         }),
       );
-      if (mediaType === "image") setDraft("");
+      setDraft("");
     } catch (sendError) {
       await supabase.storage.from("message-media").remove([path]);
       setError(
@@ -250,86 +227,7 @@ export function ChatThread({
       setError("Images must be under 8 MB.");
       return;
     }
-    await sendMedia(file, "image");
-  }
-
-  function stopRecording() {
-    if (recorderRef.current?.state === "recording") {
-      recorderRef.current.stop();
-    }
-  }
-
-  async function startRecording() {
-    if (
-      !navigator.mediaDevices?.getUserMedia ||
-      typeof MediaRecorder === "undefined"
-    ) {
-      setError("Voice recording is not supported in this browser.");
-      return;
-    }
-
-    setError("");
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const preferredTypes = ["audio/webm;codecs=opus", "audio/ogg", "audio/mp4"];
-      const mimeType = preferredTypes.find((type) =>
-        MediaRecorder.isTypeSupported(type),
-      );
-      const recorder = mimeType
-        ? new MediaRecorder(stream, { mimeType })
-        : new MediaRecorder(stream);
-
-      recorderRef.current = recorder;
-      streamRef.current = stream;
-      chunksRef.current = [];
-      setRecordingSeconds(0);
-      setRecording(true);
-      const startedAt = Date.now();
-
-      recorder.ondataavailable = (event) => {
-        if (event.data.size) chunksRef.current.push(event.data);
-      };
-
-      recorder.onstop = () => {
-        if (timerRef.current !== null) window.clearInterval(timerRef.current);
-        timerRef.current = null;
-        stream.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-        setRecording(false);
-
-        const seconds = Math.max(
-          1,
-          Math.min(600, Math.round((Date.now() - startedAt) / 1000)),
-        );
-        const baseType = recorder.mimeType.split(";")[0] || "audio/webm";
-        const extension =
-          baseType === "audio/ogg"
-            ? "ogg"
-            : baseType === "audio/mp4"
-              ? "m4a"
-              : "webm";
-        const blob = new Blob(chunksRef.current, { type: baseType });
-        const file = new File([blob], `voice-note.${extension}`, {
-          type: baseType,
-        });
-
-        if (file.size > 12 * 1024 * 1024) {
-          setError("Voice notes must be under 12 MB.");
-          return;
-        }
-        void sendMedia(file, "audio", seconds);
-      };
-
-      recorder.start(250);
-      timerRef.current = window.setInterval(() => {
-        const elapsed = Math.floor((Date.now() - startedAt) / 1000);
-        setRecordingSeconds(elapsed);
-        if (elapsed >= 600) recorder.stop();
-      }, 1000);
-    } catch {
-      setError("Microphone access was not available.");
-      setRecording(false);
-    }
+    await sendMedia(file);
   }
 
   return (
@@ -454,17 +352,17 @@ export function ChatThread({
           placeholder={`Write to ${recipient.displayName}`}
           maxLength={4000}
           rows={2}
-          disabled={busy || recording}
+          disabled={busy}
         />
         <div className="composer-actions">
-          <button className="button" type="submit" disabled={busy || recording}>
+          <button className="button" type="submit" disabled={busy}>
             {busy ? "Sending…" : "Send"}
           </button>
           <button
             className="secondary-button"
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            disabled={busy || recording}
+            disabled={busy}
           >
             send image
           </button>
@@ -475,16 +373,6 @@ export function ChatThread({
             accept="image/jpeg,image/png,image/webp,image/gif"
             onChange={chooseImage}
           />
-          <button
-            className={recording ? "record-button active" : "record-button"}
-            type="button"
-            onClick={recording ? stopRecording : startRecording}
-            disabled={busy}
-          >
-            {recording
-              ? `stop voice note (${recordingSeconds}s)`
-              : "record voice note"}
-          </button>
         </div>
         {error ? <p className="form-error composer-error">{error}</p> : null}
       </form>

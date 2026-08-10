@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthDialog } from "@/components/auth-dialog";
 import { Avatar } from "@/components/avatar";
+import { LiveMatchPanel } from "@/components/live-match-panel";
 import { SonaLogo } from "@/components/sona-logo";
 import { createClient } from "@/lib/supabase/client";
 import type { InboxItem } from "@/types/inbox";
@@ -20,11 +21,6 @@ type DirectoryClientProps = {
   inbox: InboxItem[];
   openSignIn?: boolean;
   initialSection?: Section;
-};
-
-type ConnectedMember = {
-  matched_id: string;
-  display_name: string;
 };
 
 const SONA_SIGNUP_URL = "https://v1-gray-one.vercel.app/signup";
@@ -64,7 +60,7 @@ function inboxPreview(item: InboxItem, currentUserId: string) {
   const prefix = item.latest.sender_id === currentUserId ? "You: " : "";
   if (item.latest.body) return `${prefix}${item.latest.body}`;
   if (item.latest.media_type === "image") return `${prefix}sent an image`;
-  if (item.latest.media_type === "audio") return `${prefix}sent a voice note`;
+  if (item.latest.media_type === "audio") return `${prefix}sent media`;
   return `${prefix}new message`;
 }
 
@@ -91,9 +87,6 @@ export function DirectoryClient({
   const [authMode, setAuthMode] = useState<"signup" | "signin">(
     openSignIn ? "signin" : "signup",
   );
-  const [connecting, setConnecting] = useState(false);
-  const [connectNotice, setConnectNotice] = useState("");
-  const [connectError, setConnectError] = useState("");
   const [shareOpen, setShareOpen] = useState(false);
   const [shareNotice, setShareNotice] = useState("");
 
@@ -140,28 +133,6 @@ export function DirectoryClient({
     const supabase = createClient();
     await supabase.auth.signOut();
     window.location.href = "/";
-  }
-
-  async function connectRandomly() {
-    if (!user) {
-      showAuth("signin");
-      return;
-    }
-
-    setConnecting(true);
-    setConnectNotice("");
-    setConnectError("");
-    const supabase = createClient();
-    const { data, error } = await supabase.rpc("connect_random_member");
-    const match = (data as ConnectedMember[] | null)?.[0];
-
-    if (error) setConnectError(error.message);
-    else if (!match) setConnectError("There is nobody available to connect with yet.");
-    else {
-      setConnectNotice("Connected!");
-      router.refresh();
-    }
-    setConnecting(false);
   }
 
   async function copySignupLink() {
@@ -279,13 +250,11 @@ export function DirectoryClient({
 
         {activeSection === "connect" ? (
           <section className="sona-section sona-connect-section" aria-label="Connect">
-            <div className="sona-connect-hero">
-              <button className="button sona-connect-button" type="button" disabled={connecting} onClick={() => void connectRandomly()}>
-                {connecting ? "Connecting…" : "Random connect"}
-              </button>
-              {connectNotice ? <p className="sona-connect-success" role="status">{connectNotice}</p> : null}
-              {connectError ? <p className="form-error" role="alert">{connectError}</p> : null}
-            </div>
+            <LiveMatchPanel
+              user={user}
+              profiles={profiles}
+              onSignIn={() => showAuth("signin")}
+            />
 
             <div className="sona-history-card">
               <div className="sona-history-heading">

@@ -119,7 +119,13 @@ export default async function HomePage({
       ownProfile={ownProfile}
       inbox={inbox}
       openSignIn={auth === "signin"}
-      initialSection={section === "connect" || section === "profile" ? section : "directory"}
+      initialSection={
+        section === "directory" || section === "connect" || section === "profile"
+          ? section
+          : user
+            ? "connect"
+            : "directory"
+      }
     />
   );
 }

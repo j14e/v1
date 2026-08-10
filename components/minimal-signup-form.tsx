@@ -109,7 +109,7 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/account`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
         data: {
           display_name: displayName,
           year_level: yearLevel,
