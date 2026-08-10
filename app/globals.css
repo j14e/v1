@@ -4570,7 +4570,7 @@ textarea:focus-visible {
 
 .sona-live-section {
   display: grid;
-  grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.42fr);
   align-items: stretch;
   gap: 12px;
   min-height: 0;
@@ -4651,14 +4651,55 @@ textarea:focus-visible {
   text-align: center;
 }
 
+.sona-live-empty-message > div {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.sona-live-empty-message strong {
+  color: #333333;
+}
+
+.sona-live-empty-message .button {
+  margin-top: 4px;
+}
+
+.sona-live-room-mark {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e5e5e5;
+  color: #777777;
+  font-size: 10px;
+}
+
 @media (max-width: 800px) {
   .sona-live-section {
     grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100%;
+    overflow: hidden;
   }
 
   .sona-live-chat {
     min-height: 0;
     flex: 1;
+  }
+
+  .sona-live-match {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .sona-live-match-heading {
+    grid-column: 1 / -1;
+  }
+
+  .sona-live-match .sona-connect-button {
+    grid-column: 1 / -1;
   }
 }
 

@@ -124,7 +124,7 @@ export function LiveMatchPanel({
 
       {queueStatus === "matched" ? (
         <div className="sona-match-result" role="status">
-          <span><strong>Connected!</strong><small>Your live chat is open below.</small></span>
+          <span><strong>Connected!</strong><small>Your live chat is ready.</small></span>
         </div>
       ) : (
         <button

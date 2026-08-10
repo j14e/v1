@@ -120,22 +120,25 @@ export function LiveSessionWindow({
     setBusy(false);
   }
 
-  if (!user) {
+  if (!user || !session) {
     return (
-      <section className="sona-live-chat sona-live-empty" aria-label="Live chat">
-        <strong>Live</strong>
-        <p>Spread the words and make us grow.</p>
-        <button className="button sona-primary-button" type="button" onClick={onSignIn}>Sign in</button>
-      </section>
-    );
-  }
-
-  if (!session) {
-    return (
-      <section className="sona-live-chat sona-live-empty" aria-label="Live chat">
-        <strong>Live</strong>
-        <div className="sona-live-blank" aria-hidden="true" />
-        <p>Spread the words and make us grow.</p>
+      <section className="sona-live-chat" aria-label="Live chat">
+        <div className="sona-live-chat-titlebar">
+          <span className="sona-live-room-mark" aria-hidden="true">●</span>
+          <span><strong>Live chat</strong><small>Waiting room</small></span>
+        </div>
+        <div className="message-history sona-live-message-history sona-live-empty-message" aria-live="polite">
+          <div>
+            <strong>No one has joined yet.</strong>
+            <p>Spread the words and make us grow.</p>
+            {!user ? <button className="button sona-primary-button" type="button" onClick={onSignIn}>Sign in</button> : null}
+          </div>
+        </div>
+        <form className="message-composer" onSubmit={(event) => event.preventDefault()}>
+          <label htmlFor="live-message-waiting">Live message</label>
+          <textarea id="live-message-waiting" placeholder="Match with someone to start chatting" rows={2} disabled />
+          <div className="composer-actions"><button className="button" type="submit" disabled>Send</button></div>
+        </form>
       </section>
     );
   }

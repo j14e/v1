@@ -139,7 +139,7 @@ export default async function HomePage({
           ? section
           : user
             ? "live"
-            : "directory"
+            : "live"
       }
     />
   );

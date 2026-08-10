@@ -209,7 +209,6 @@ export function DirectoryClient({
 
         {activeSection === "live" ? (
           <section className="sona-section sona-live-section" aria-label="Live">
-            <LiveMatchPanel user={user} onSignIn={() => showAuth("signin")} />
             <LiveSessionWindow
               user={user}
               ownProfile={ownProfile}
@@ -217,6 +216,7 @@ export function DirectoryClient({
               initialMessages={liveSessionMessages}
               onSignIn={() => showAuth("signin")}
             />
+            <LiveMatchPanel user={user} onSignIn={() => showAuth("signin")} />
           </section>
         ) : null}
 
