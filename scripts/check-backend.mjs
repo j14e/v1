@@ -73,6 +73,13 @@ if (!anonymousConnectError) {
   throw new Error("Anonymous visitors can run the random Connect action.");
 }
 
+const { error: anonymousLiveMatchError } =
+  await supabase.rpc("join_live_match_queue");
+
+if (!anonymousLiveMatchError) {
+  throw new Error("Anonymous visitors can enter the live match queue.");
+}
+
 const { error: bannerReadError } = await supabase
   .from("banner_submissions")
   .select("id,file_path")
