@@ -48,6 +48,7 @@ function PublicAdminHeader() {
         <SonaLogo />
       </header>
       <nav className="sona-tabs sona-link-tabs" aria-label="Main navigation">
+        <Link href="/?section=live">Live</Link>
         <Link href="/">Directory</Link>
         <Link href="/?section=connect">Connect</Link>
         <Link href="/account">Profile</Link>

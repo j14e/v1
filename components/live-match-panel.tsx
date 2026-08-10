@@ -1,12 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { Avatar } from "@/components/avatar";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Message } from "@/types/message";
-import type { Profile, SessionUser } from "@/types/profile";
+import type { SessionUser } from "@/types/profile";
 
 type QueueStatus = "idle" | "queued" | "matched";
 
@@ -14,19 +11,15 @@ type QueueResult = {
   status: "queued" | "queued_fallback" | "matched";
   matched_id: string | null;
   display_name: string | null;
-  avatar_url: string | null;
   queue_count: number;
+  live_session_id: string | null;
 };
-
-type Match = { id: string; name: string; avatarUrl: string | null };
 
 export function LiveMatchPanel({
   user,
-  profiles,
   onSignIn,
 }: {
   user: SessionUser;
-  profiles: Profile[];
   onSignIn: () => void;
 }) {
   const router = useRouter();
@@ -34,13 +27,7 @@ export function LiveMatchPanel({
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
-  const [match, setMatch] = useState<Match | null>(null);
   const [queueCount, setQueueCount] = useState(0);
-
-  const profilesById = useMemo(
-    () => new Map(profiles.map((profile) => [profile.id, profile])),
-    [profiles],
-  );
 
   useEffect(() => {
     if (!user || queueStatus !== "queued") return;
@@ -58,40 +45,27 @@ export function LiveMatchPanel({
 
   useEffect(() => {
     if (!user) return;
-
     const supabase = createClient();
     const channel = supabase
-      .channel(`live-match:${user.id}`)
+      .channel(`live-match-membership:${user.id}`)
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
-          table: "messages",
-          filter: `recipient_id=eq.${user.id}`,
+          table: "live_session_members",
+          filter: `member_id=eq.${user.id}`,
         },
-        (payload) => {
-          const incoming = payload.new as Message;
-          if (incoming.message_type !== "connection") return;
-
-          const person = profilesById.get(incoming.sender_id);
-          setMatch({
-            id: incoming.sender_id,
-            name: person?.display_name ?? "Your match",
-            avatarUrl: person?.avatar_url ?? null,
-          });
+        () => {
           setQueueStatus("matched");
-          setNotice("Connected!");
+          setNotice("Connected! Your live chat is ready.");
           setError("");
           router.refresh();
         },
       )
       .subscribe();
-
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, [profilesById, router, user?.id]);
+    return () => { void supabase.removeChannel(channel); };
+  }, [router, user?.id]);
 
   async function joinQueue() {
     if (!user) {
@@ -113,17 +87,9 @@ export function LiveMatchPanel({
     }
 
     setQueueCount(result.queue_count);
-    if (result.matched_id && result.display_name) {
-      setMatch({
-        id: result.matched_id,
-        name: result.display_name,
-        avatarUrl: result.avatar_url,
-      });
-    }
-
     if (result.status === "matched") {
       setQueueStatus("matched");
-      setNotice("Connected!");
+      setNotice("Connected! Your live chat is ready.");
     } else if (result.status === "queued_fallback") {
       setQueueStatus("queued");
       setNotice("Connected! You are still waiting for a live match.");
@@ -156,14 +122,9 @@ export function LiveMatchPanel({
         {queueStatus === "queued" ? <small>{queueCount} waiting</small> : null}
       </div>
 
-      {queueStatus === "matched" && match ? (
+      {queueStatus === "matched" ? (
         <div className="sona-match-result" role="status">
-          <Avatar name={match.name} url={match.avatarUrl} />
-          <span>
-            <strong>Connected!</strong>
-            <small>{match.name}</small>
-          </span>
-          <Link className="sona-match-chat-link" href={`/messages/${match.id}`}>Open chat</Link>
+          <span><strong>Connected!</strong><small>Your live chat is open below.</small></span>
         </div>
       ) : (
         <button

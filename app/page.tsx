@@ -2,6 +2,7 @@ import { DirectoryClient } from "@/components/directory-client";
 import { createClient } from "@/lib/supabase/server";
 import type { InboxItem } from "@/types/inbox";
 import type { Message } from "@/types/message";
+import type { LiveSession, LiveSessionMessage } from "@/types/live-session";
 import type { Profile, SessionUser } from "@/types/profile";
 
 export const dynamic = "force-dynamic";
@@ -36,8 +37,10 @@ export default async function HomePage({
 
   let ownProfile: Profile | null = null;
   let inbox: InboxItem[] = [];
+  let liveSession: LiveSession | null = null;
+  let liveSessionMessages: LiveSessionMessage[] = [];
   if (user) {
-    const [{ data }, { data: rawMessages }] = await Promise.all([
+    const [{ data }, { data: rawMessages }, { data: rawLiveSession }] = await Promise.all([
       supabase
         .from("profiles")
         .select(
@@ -52,8 +55,18 @@ export default async function HomePage({
         )
         .order("created_at", { ascending: false })
         .limit(500),
+      supabase.rpc("get_latest_live_session"),
     ]);
     ownProfile = data as Profile | null;
+    liveSession = (rawLiveSession as LiveSession[] | null)?.[0] ?? null;
+    if (liveSession) {
+      const { data: rawLiveMessages } = await supabase
+        .from("live_session_messages")
+        .select("id,session_id,sender_id,body,created_at")
+        .eq("session_id", liveSession.session_id)
+        .order("created_at", { ascending: true });
+      liveSessionMessages = (rawLiveMessages ?? []) as LiveSessionMessage[];
+    }
 
     const messages = (rawMessages ?? []) as Message[];
     const peerIds = Array.from(
@@ -118,12 +131,14 @@ export default async function HomePage({
       user={sessionUser}
       ownProfile={ownProfile}
       inbox={inbox}
+      liveSession={liveSession}
+      liveSessionMessages={liveSessionMessages}
       openSignIn={auth === "signin"}
       initialSection={
-        section === "directory" || section === "connect" || section === "profile"
+        section === "live" || section === "directory" || section === "connect" || section === "profile"
           ? section
           : user
-            ? "connect"
+            ? "live"
             : "directory"
       }
     />

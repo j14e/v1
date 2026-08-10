@@ -7,18 +7,22 @@ import { useRouter } from "next/navigation";
 import { AuthDialog } from "@/components/auth-dialog";
 import { Avatar } from "@/components/avatar";
 import { LiveMatchPanel } from "@/components/live-match-panel";
+import { LiveSessionWindow } from "@/components/live-session-window";
 import { SonaLogo } from "@/components/sona-logo";
 import { createClient } from "@/lib/supabase/client";
 import type { InboxItem } from "@/types/inbox";
+import type { LiveSession, LiveSessionMessage } from "@/types/live-session";
 import type { Profile, SessionUser } from "@/types/profile";
 
-type Section = "directory" | "connect" | "profile";
+type Section = "live" | "directory" | "connect" | "profile";
 
 type DirectoryClientProps = {
   profiles: Profile[];
   user: SessionUser;
   ownProfile: Profile | null;
   inbox: InboxItem[];
+  liveSession: LiveSession | null;
+  liveSessionMessages: LiveSessionMessage[];
   openSignIn?: boolean;
   initialSection?: Section;
 };
@@ -77,8 +81,10 @@ export function DirectoryClient({
   user,
   ownProfile,
   inbox,
+  liveSession,
+  liveSessionMessages,
   openSignIn = false,
-  initialSection = "directory",
+  initialSection = "live",
 }: DirectoryClientProps) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState<Section>(initialSection);
@@ -182,7 +188,7 @@ export function DirectoryClient({
       </header>
 
       <nav className="sona-tabs" aria-label="Main sections">
-        {(["directory", "connect", "profile"] as Section[]).map((section) => (
+        {(["live", "directory", "connect", "profile"] as Section[]).map((section) => (
           <button
             key={section}
             type="button"
@@ -200,6 +206,19 @@ export function DirectoryClient({
 
       <main className="sona-main">
         <NewMembersStrip profiles={newMembers} onOpen={openProfile} />
+
+        {activeSection === "live" ? (
+          <section className="sona-section sona-live-section" aria-label="Live">
+            <LiveMatchPanel user={user} onSignIn={() => showAuth("signin")} />
+            <LiveSessionWindow
+              user={user}
+              ownProfile={ownProfile}
+              session={liveSession}
+              initialMessages={liveSessionMessages}
+              onSignIn={() => showAuth("signin")}
+            />
+          </section>
+        ) : null}
 
         {activeSection === "directory" ? (
           <section className="sona-section sona-directory-section" aria-labelledby="directory-title">
@@ -250,12 +269,6 @@ export function DirectoryClient({
 
         {activeSection === "connect" ? (
           <section className="sona-section sona-connect-section" aria-label="Connect">
-            <LiveMatchPanel
-              user={user}
-              profiles={profiles}
-              onSignIn={() => showAuth("signin")}
-            />
-
             <div className="sona-history-card">
               <div className="sona-history-heading">
                 <h2>Chats</h2>
