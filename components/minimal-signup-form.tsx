@@ -4,13 +4,28 @@ import Image from "next/image";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { parseCourseCodes } from "@/lib/course-codes";
 import { yearLevels } from "@/lib/catalog";
-import { savePendingSignupAvatar } from "@/lib/pending-signup-avatar";
 import { createClient } from "@/lib/supabase/client";
+
+async function uploadSignupAvatar(profileId: string, file: File) {
+  const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `${profileId}/profile.${extension}`;
+  const supabase = createClient();
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(path, file, { upsert: true, cacheControl: "3600" });
+  if (uploadError) throw uploadError;
+
+  const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(path);
+  const { error: updateError } = await supabase
+    .from("profiles")
+    .update({ avatar_url: `${publicUrl}?v=${Date.now()}` })
+    .eq("id", profileId);
+  if (updateError) throw updateError;
+}
 
 export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState("");
   const [isComplete, setIsComplete] = useState(false);
@@ -50,12 +65,16 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
     const displayName = String(formData.get("display_name") ?? "").trim();
     const yearLevel = String(formData.get("year_level") ?? "");
     const parsed = parseCourseCodes(String(formData.get("courses") ?? ""));
+    const password = String(formData.get("password") ?? "");
+    const confirmation = String(formData.get("password_confirmation") ?? "");
 
     setIsComplete(
       form.checkValidity()
       && displayName.length >= 2
       && Boolean(yearLevel)
-      && !parsed.error,
+      && !parsed.error
+      && password.length >= 8
+      && password === confirmation,
     );
   }
 
@@ -63,7 +82,6 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
     event.preventDefault();
     setBusy(true);
     setError("");
-    setNotice("");
 
     const form = event.currentTarget;
     const formData = new FormData(form);
@@ -71,6 +89,8 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
     const displayName = String(formData.get("display_name")).trim();
     const yearLevel = String(formData.get("year_level"));
     const parsed = parseCourseCodes(String(formData.get("courses") ?? ""));
+    const password = String(formData.get("password") ?? "");
+    const confirmation = String(formData.get("password_confirmation") ?? "");
 
     if (displayName.length < 2) {
       setError("Enter the name you want people to see.");
@@ -87,22 +107,22 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
       setBusy(false);
       return;
     }
-    if (avatarFile) {
-      try {
-        await savePendingSignupAvatar(email, avatarFile);
-      } catch {
-        setError("Your photo could not be saved. Choose it again and retry.");
-        setBusy(false);
-        return;
-      }
+    if (password.length < 8) {
+      setError("Use a password with at least 8 characters.");
+      setBusy(false);
+      return;
+    }
+    if (password !== confirmation) {
+      setError("Passwords do not match.");
+      setBusy(false);
+      return;
     }
 
     const supabase = createClient();
-    const { error: signUpError } = await supabase.auth.signInWithOtp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
+      password,
       options: {
-        shouldCreateUser: true,
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
         data: {
           display_name: displayName,
           year_level: yearLevel,
@@ -111,20 +131,20 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
       },
     });
 
-    if (signUpError) setError(signUpError.message);
-    else {
-      setNotice(avatarFile
-        ? "Check your inbox for your SONA access link. Your photo will be added when you sign in."
-        : "Check your inbox for your SONA access link.");
-      form.reset();
-      setAvatarFile(null);
-      setIsComplete(false);
+    if (signUpError) {
+      setError(signUpError.message);
+    } else if (!data.session || !data.user) {
+      setError("Email confirmation is still enabled. Turn it off temporarily in Supabase before signing up without email verification.");
+    } else {
+      try {
+        if (avatarFile) await uploadSignupAvatar(data.user.id, avatarFile);
+        window.location.assign("/");
+        return;
+      } catch (uploadError) {
+        setError(uploadError instanceof Error ? uploadError.message : "Your account was created, but the profile photo could not be saved.");
+      }
     }
     setBusy(false);
-  }
-
-  if (notice) {
-    return <div className="sona-form-notice" role="status">{notice}</div>;
   }
 
   return (
@@ -147,11 +167,10 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
           name="avatar"
           type="file"
           accept="image/jpeg,image/png,image/webp"
-          capture="user"
           disabled={busy}
           onChange={chooseAvatar}
         />
-        <small>Optional — use the front camera or choose a photo. Maximum 3 MB.</small>
+        <small>Optional — choose a photo from your gallery or files. Maximum 3 MB.</small>
       </label>
       <label>
         Email
@@ -172,6 +191,14 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
         Courses
         <input name="courses" required placeholder="DES100, COMPSCI130" autoComplete="off" aria-describedby="course-format-help" />
         <small id="course-format-help">Format example: DES100. Use commas for more than one course.</small>
+      </label>
+      <label>
+        Password
+        <input name="password" type="password" required minLength={8} placeholder="At least 8 characters" autoComplete="new-password" />
+      </label>
+      <label>
+        Confirm password
+        <input name="password_confirmation" type="password" required minLength={8} autoComplete="new-password" />
       </label>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       <button className="button sona-primary-button" type="submit" disabled={busy}>

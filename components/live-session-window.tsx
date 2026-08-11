@@ -120,6 +120,20 @@ export function LiveSessionWindow({
     setBusy(false);
   }
 
+  async function leaveLiveChat() {
+    if (!user || !session || busy) return;
+    setBusy(true);
+    setError("");
+    const supabase = createClient();
+    const { error: leaveError } = await supabase.rpc("leave_live_session");
+    if (leaveError) {
+      setError(leaveError.message);
+      setBusy(false);
+      return;
+    }
+    window.location.assign("/?section=live");
+  }
+
   if (!user || !session) {
     return (
       <section className="sona-live-chat" aria-label="Live chat">
@@ -148,6 +162,9 @@ export function LiveSessionWindow({
       <div className="sona-live-chat-titlebar">
         <Avatar name={session.display_name} url={session.avatar_url} size="small" />
         <span><strong>{session.display_name}</strong><small>Live</small></span>
+        <button className="sona-leave-live-chat" type="button" onClick={() => void leaveLiveChat()} disabled={busy}>
+          Leave chat
+        </button>
       </div>
       <div className="message-history sona-live-message-history" aria-live="polite">
         {messages.length ? messages.map((message) => {

@@ -4611,6 +4611,22 @@ textarea:focus-visible {
   font-size: 11px;
 }
 
+.sona-leave-live-chat {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: #666666;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+.sona-leave-live-chat:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .sona-live-message-history {
   min-height: 0;
   flex: 1;
