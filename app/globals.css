@@ -3009,6 +3009,34 @@ textarea:focus-visible {
   padding: 9px 11px;
 }
 
+.sona-email-input {
+  display: flex;
+  min-width: 0;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--line-dark);
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.sona-email-input input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  border-radius: 0;
+}
+
+.sona-email-input span {
+  display: flex;
+  align-items: center;
+  border-left: 1px solid var(--line);
+  background: #f2f2f2;
+  color: #555555;
+  padding: 0 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
 .sona-signup-form small {
   color: var(--muted);
   font-weight: normal;

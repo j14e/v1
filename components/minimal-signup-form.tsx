@@ -6,6 +6,9 @@ import { parseCourseCodes } from "@/lib/course-codes";
 import { yearLevels } from "@/lib/catalog";
 import { createClient } from "@/lib/supabase/client";
 
+const UOA_EMAIL_DOMAIN = "@aucklanduni.ac.nz";
+const UOA_EMAIL_LOCAL_PART = /^[a-z0-9._%+\-]+$/i;
+
 async function uploadSignupAvatar(profileId: string, file: File) {
   const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
   const path = `${profileId}/profile.${extension}`;
@@ -85,13 +88,19 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const email = String(formData.get("email")).trim().toLowerCase();
+    const emailLocal = String(formData.get("email_local")).trim().toLowerCase();
+    const email = `${emailLocal}${UOA_EMAIL_DOMAIN}`;
     const displayName = String(formData.get("display_name")).trim();
     const yearLevel = String(formData.get("year_level"));
     const parsed = parseCourseCodes(String(formData.get("courses") ?? ""));
     const password = String(formData.get("password") ?? "");
     const confirmation = String(formData.get("password_confirmation") ?? "");
 
+    if (!UOA_EMAIL_LOCAL_PART.test(emailLocal)) {
+      setError("Enter the part of your University of Auckland email before @aucklanduni.ac.nz.");
+      setBusy(false);
+      return;
+    }
     if (displayName.length < 2) {
       setError("Enter the name you want people to see.");
       setBusy(false);
@@ -173,8 +182,11 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
         <small>Optional — choose a photo from your gallery or files. Maximum 3 MB.</small>
       </label>
       <label>
-        Email
-        <input name="email" type="email" required placeholder="you@example.com" autoComplete="email" />
+        University of Auckland email
+        <span className="sona-email-input">
+          <input name="email_local" type="text" required placeholder="your.username" autoComplete="username" autoCapitalize="none" />
+          <span>{UOA_EMAIL_DOMAIN}</span>
+        </span>
       </label>
       <label>
         Name
