@@ -12,6 +12,7 @@ alter table public.live_match_queue enable row level security;
 revoke all on public.live_match_queue from anon;
 revoke all on public.live_match_queue from authenticated;
 
+drop function if exists public.join_live_match_queue();
 create or replace function public.join_live_match_queue()
 returns table (
   status text,

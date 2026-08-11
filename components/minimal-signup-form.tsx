@@ -47,14 +47,12 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
   function updateCompletion(event: FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const email = String(formData.get("email") ?? "").trim().toLowerCase();
     const displayName = String(formData.get("display_name") ?? "").trim();
     const yearLevel = String(formData.get("year_level") ?? "");
     const parsed = parseCourseCodes(String(formData.get("courses") ?? ""));
 
     setIsComplete(
       form.checkValidity()
-      && email.endsWith("@aucklanduni.ac.nz")
       && displayName.length >= 2
       && Boolean(yearLevel)
       && !parsed.error,
@@ -74,11 +72,6 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
     const yearLevel = String(formData.get("year_level"));
     const parsed = parseCourseCodes(String(formData.get("courses") ?? ""));
 
-    if (!email.endsWith("@aucklanduni.ac.nz")) {
-      setError("Use your @aucklanduni.ac.nz student email.");
-      setBusy(false);
-      return;
-    }
     if (displayName.length < 2) {
       setError("Enter the name you want people to see.");
       setBusy(false);
@@ -121,8 +114,8 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
     if (signUpError) setError(signUpError.message);
     else {
       setNotice(avatarFile
-        ? "Check your student inbox for your SONA access link. Your photo will be added when you sign in."
-        : "Check your student inbox for your SONA access link.");
+        ? "Check your inbox for your SONA access link. Your photo will be added when you sign in."
+        : "Check your inbox for your SONA access link.");
       form.reset();
       setAvatarFile(null);
       setIsComplete(false);
@@ -161,8 +154,8 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
         <small>Optional — use the front camera or choose a photo. Maximum 3 MB.</small>
       </label>
       <label>
-        Student email
-        <input name="email" type="email" required placeholder="you@aucklanduni.ac.nz" pattern=".+@aucklanduni\.ac\.nz" autoComplete="email" />
+        Email
+        <input name="email" type="email" required placeholder="you@example.com" autoComplete="email" />
       </label>
       <label>
         Name

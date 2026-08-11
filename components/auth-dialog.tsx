@@ -49,12 +49,6 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
     const email = String(formData.get("email")).trim().toLowerCase();
     const password = String(formData.get("password") ?? "");
 
-    if (!email.endsWith("@aucklanduni.ac.nz")) {
-      setError("Use your @aucklanduni.ac.nz student email.");
-      setBusy(false);
-      return;
-    }
-
     const supabase = createClient();
     if (signInMethod === "password") {
       if (!password) {
@@ -75,7 +69,7 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
       });
 
       if (signInError) setError(signInError.message);
-      else setNotice("Check your student inbox for your SONA sign-in link.");
+      else setNotice("Check your inbox for your SONA sign-in link.");
     }
     setBusy(false);
   }
@@ -99,8 +93,8 @@ export function AuthDialog({ open, initialMode = "signup", onClose }: AuthDialog
           ) : (
             <form className="sona-signin-form" onSubmit={handleSignIn}>
               <label>
-                Student email
-                <input name="email" type="email" required placeholder="you@aucklanduni.ac.nz" autoComplete="email" />
+                Email
+                <input name="email" type="email" required placeholder="you@example.com" autoComplete="email" />
               </label>
               {signInMethod === "password" ? (
                 <label>
