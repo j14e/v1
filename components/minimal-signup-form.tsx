@@ -202,7 +202,7 @@ export function MinimalSignupForm({ compact = false }: { compact?: boolean }) {
       </label>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       <button className="button sona-primary-button" type="submit" disabled={busy}>
-        {busy ? "Sending access link…" : isComplete ? "DONE!" : "doo-doo doo..."}
+        {busy ? "Creating account…" : isComplete ? "DONE!" : "doo-doo doo..."}
       </button>
     </form>
   );
